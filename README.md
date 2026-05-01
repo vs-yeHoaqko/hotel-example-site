@@ -116,6 +116,22 @@ View the latest HTML report after a run:
 pnpm run test:report
 ```
 
+### Evaluation Harness
+
+This repository also includes an evaluation-local harness under
+[`evaluation/`](./evaluation/). It runs a layered quality gate, captures
+`summary.json`, `summary.md`, logs, and Playwright artifacts under
+`evaluation/runs/`, classifies failures, and recommends the next human action.
+
+Run the default evaluation gate:
+
+```bash
+node evaluation/bin/run-evaluation.mjs --mode gate
+```
+
+See [`evaluation/README.md`](./evaluation/README.md) for the available modes,
+output structure, and current boundaries.
+
 ### Legacy (Archived)
 
 The repositories below contain legacy example code that is no longer maintained and is provided for reference only.

@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "records"],
+  "properties": {
+    "schemaVersion": { "type": "integer" },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "behavior",
+          "ownerLayer",
+          "evidence",
+          "coveredBy",
+          "migrationRecommendation"
+        ],
+        "properties": {
+          "behavior": { "type": "string" },
+          "ownerLayer": {
+            "type": "string",
+            "enum": ["unit", "integration", "e2e"]
+          },
+          "evidence": { "type": "string" },
+          "coveredBy": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "migrationRecommendation": { "type": "string" }
+        }
+      }
+    }
+  }
+}

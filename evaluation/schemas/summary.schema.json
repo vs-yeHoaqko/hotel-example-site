@@ -1,0 +1,166 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "mode",
+    "target",
+    "repository",
+    "startedAt",
+    "finishedAt",
+    "status",
+    "counts",
+    "recommendedNextAction",
+    "layers",
+    "errors"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "integer" },
+    "runId": { "type": "string" },
+    "mode": { "type": "string", "enum": ["gate", "full", "collect-all"] },
+    "target": { "type": "string", "enum": ["local", "deployed"] },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "commit", "dirty", "changedFiles"],
+      "properties": {
+        "branch": { "type": "string" },
+        "commit": { "type": "string" },
+        "dirty": { "type": "boolean" },
+        "changedFiles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "status"],
+            "properties": {
+              "path": { "type": "string" },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "modified",
+                  "added",
+                  "deleted",
+                  "renamed",
+                  "untracked",
+                  "unknown"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "startedAt": { "type": "string" },
+    "finishedAt": { "type": "string" },
+    "status": { "type": "string", "enum": ["passed", "failed", "error"] },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed", "failed", "skipped", "timeout"],
+      "properties": {
+        "passed": { "type": "integer" },
+        "failed": { "type": "integer" },
+        "skipped": { "type": "integer" },
+        "timeout": { "type": "integer" }
+      }
+    },
+    "recommendedNextAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "none",
+            "inspect_product",
+            "inspect_test",
+            "fix_environment",
+            "investigate_unknown"
+          ]
+        },
+        "message": { "type": "string" }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "required",
+          "status",
+          "command",
+          "exitCode",
+          "durationMs",
+          "timedOut",
+          "skippedReason",
+          "counts",
+          "classification",
+          "artifacts"
+        ],
+        "properties": {
+          "name": { "type": "string" },
+          "required": { "type": "boolean" },
+          "status": {
+            "type": "string",
+            "enum": ["passed", "failed", "skipped"]
+          },
+          "command": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["configuredArgv", "executedArgv", "env", "display"],
+            "properties": {
+              "configuredArgv": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "executedArgv": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "env": {
+                "type": "object",
+                "additionalProperties": { "type": "string" },
+                "required": [],
+                "properties": {}
+              },
+              "display": { "type": "string" }
+            }
+          },
+          "exitCode": { "type": "integer", "nullable": true },
+          "durationMs": { "type": "integer" },
+          "timedOut": { "type": "boolean" },
+          "skippedReason": { "type": "string", "nullable": true },
+          "counts": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["passed", "failed", "skipped", "timeout"],
+            "properties": {
+              "passed": { "type": "integer" },
+              "failed": { "type": "integer" },
+              "skipped": { "type": "integer" },
+              "timeout": { "type": "integer" }
+            }
+          },
+          "classification": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["product", "test", "environment", "timeout", "unknown"]
+          },
+          "artifacts": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

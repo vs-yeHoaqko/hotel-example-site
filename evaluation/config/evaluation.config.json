@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "layers": [
+    {
+      "name": "static",
+      "required": true,
+      "modes": ["gate", "full", "collect-all"],
+      "timeoutMs": 60000,
+      "command": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "evaluation/bin",
+        "evaluation/config",
+        "evaluation/lib",
+        "evaluation/schemas",
+        "evaluation/tests",
+        "evaluation/reports",
+        "evaluation/examples",
+        "evaluation/baselines",
+        "evaluation/specs"
+      ],
+      "dependsOn": [],
+      "requires": ["node"],
+      "failureClassification": "test"
+    },
+    {
+      "name": "unit",
+      "required": true,
+      "modes": ["gate", "full", "collect-all"],
+      "timeoutMs": 60000,
+      "command": ["node", "--test", "evaluation/tests/unit/billing.test.mjs"],
+      "dependsOn": [],
+      "requires": ["node"]
+    },
+    {
+      "name": "integration",
+      "required": true,
+      "modes": ["gate", "full", "collect-all"],
+      "timeoutMs": 120000,
+      "command": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "evaluation/config/playwright.integration.config.mjs"
+      ],
+      "dependsOn": [],
+      "requires": ["node", "playwright", "dev-server"],
+      "failureClassification": "product"
+    },
+    {
+      "name": "smoke-e2e",
+      "required": true,
+      "modes": ["gate", "full", "collect-all"],
+      "timeoutMs": 180000,
+      "command": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "evaluation/config/playwright.smoke.config.mjs"
+      ],
+      "dependsOn": [],
+      "requires": ["node", "playwright", "dev-server"],
+      "failureClassification": "product"
+    },
+    {
+      "name": "full-e2e",
+      "required": true,
+      "modes": ["full", "collect-all"],
+      "timeoutMs": 600000,
+      "command": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "evaluation/config/playwright.full.config.mjs"
+      ],
+      "dependsOn": [],
+      "requires": ["node", "playwright", "dev-server"],
+      "failureClassification": "unknown"
+    }
+  ]
+}

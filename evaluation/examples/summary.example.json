@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260501T043000Z-main-abcdef0",
+  "mode": "collect-all",
+  "target": "local",
+  "repository": {
+    "branch": "main",
+    "commit": "abcdef0",
+    "dirty": true,
+    "changedFiles": [
+      {
+        "path": "evaluation/config/evaluation.config.json",
+        "status": "added"
+      },
+      {
+        "path": "evaluation/tests/e2e/smoke.spec.mjs",
+        "status": "modified"
+      }
+    ]
+  },
+  "startedAt": "2026-05-01T04:30:00.000Z",
+  "finishedAt": "2026-05-01T04:33:00.000Z",
+  "status": "failed",
+  "counts": {
+    "passed": 2,
+    "failed": 1,
+    "skipped": 1,
+    "timeout": 0
+  },
+  "recommendedNextAction": {
+    "code": "inspect_product",
+    "message": "Inspect the product behavior covered by the failing layer."
+  },
+  "layers": [
+    {
+      "name": "static",
+      "required": true,
+      "status": "passed",
+      "command": {
+        "configuredArgv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "evaluation"
+        ],
+        "executedArgv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "evaluation"
+        ],
+        "env": {
+          "EVALUATION_LAYER_NAME": "static",
+          "EVALUATION_RUN_DIR": "evaluation/runs/20260501T043000Z-main-abcdef0"
+        },
+        "display": "node node_modules/prettier/bin/prettier.cjs --check evaluation"
+      },
+      "exitCode": 0,
+      "durationMs": 1200,
+      "timedOut": false,
+      "skippedReason": null,
+      "counts": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "timeout": 0
+      },
+      "classification": null,
+      "artifacts": ["logs/static.stdout.log", "logs/static.stderr.log"]
+    },
+    {
+      "name": "unit",
+      "required": true,
+      "status": "passed",
+      "command": {
+        "configuredArgv": [
+          "node",
+          "--test",
+          "evaluation/tests/unit/billing.test.mjs"
+        ],
+        "executedArgv": [
+          "node",
+          "--test",
+          "evaluation/tests/unit/billing.test.mjs"
+        ],
+        "env": {
+          "EVALUATION_LAYER_NAME": "unit",
+          "EVALUATION_RUN_DIR": "evaluation/runs/20260501T043000Z-main-abcdef0"
+        },
+        "display": "node --test evaluation/tests/unit/billing.test.mjs"
+      },
+      "exitCode": 0,
+      "durationMs": 800,
+      "timedOut": false,
+      "skippedReason": null,
+      "counts": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "timeout": 0
+      },
+      "classification": null,
+      "artifacts": ["logs/unit.stdout.log", "logs/unit.stderr.log"]
+    },
+    {
+      "name": "integration",
+      "required": true,
+      "status": "failed",
+      "command": {
+        "configuredArgv": [
+          "node",
+          "node_modules/@playwright/test/cli.js",
+          "test",
+          "--config",
+          "evaluation/config/playwright.integration.config.mjs"
+        ],
+        "executedArgv": [
+          "node",
+          "node_modules/@playwright/test/cli.js",
+          "test",
+          "--config",
+          "evaluation/config/playwright.integration.config.mjs"
+        ],
+        "env": {
+          "EVALUATION_LAYER_NAME": "integration",
+          "EVALUATION_RUN_DIR": "evaluation/runs/20260501T043000Z-main-abcdef0"
+        },
+        "display": "node node_modules/@playwright/test/cli.js test --config evaluation/config/playwright.integration.config.mjs"
+      },
+      "exitCode": 1,
+      "durationMs": 40000,
+      "timedOut": false,
+      "skippedReason": null,
+      "counts": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "timeout": 0
+      },
+      "classification": "product",
+      "artifacts": [
+        "logs/integration.stdout.log",
+        "logs/integration.stderr.log",
+        "artifacts/integration-results.json"
+      ]
+    },
+    {
+      "name": "smoke-e2e",
+      "required": true,
+      "status": "skipped",
+      "command": {
+        "configuredArgv": [
+          "node",
+          "node_modules/@playwright/test/cli.js",
+          "test",
+          "--config",
+          "evaluation/config/playwright.smoke.config.mjs"
+        ],
+        "executedArgv": [],
+        "env": {},
+        "display": ""
+      },
+      "exitCode": null,
+      "durationMs": 0,
+      "timedOut": false,
+      "skippedReason": "Skipped after required layer \"integration\" failed.",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 1,
+        "timeout": 0
+      },
+      "classification": null,
+      "artifacts": []
+    }
+  ],
+  "errors": ["Example error shape for internal runner failures."]
+}

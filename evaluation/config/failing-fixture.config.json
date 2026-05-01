@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "layers": [
+    {
+      "name": "controlled-failing-fixture",
+      "required": true,
+      "modes": ["gate", "full", "collect-all"],
+      "timeoutMs": 60000,
+      "command": ["node", "evaluation/tests/fixtures/failing-layer.mjs"],
+      "dependsOn": [],
+      "requires": ["node"],
+      "failureClassification": "test"
+    }
+  ]
+}
