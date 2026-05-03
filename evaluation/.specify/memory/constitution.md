@@ -1,19 +1,13 @@
 <!--
 Sync Impact Report
-Version change: N/A -> 1.0.0
-Modified principles: N/A
-Added principles:
-- I. Evaluation Assets Are Isolated
-- II. Close the Evaluation Loop First
-- III. Evidence Is a Required Output
+Version change: 1.0.0 -> 1.1.0
+Modified principles:
 - IV. Tests Move Down the Pyramid When Their Responsibility Allows It
-- V. Repair Loops Must Preserve Trust
-Added sections:
-- Evaluation Scope
-- Test Layer Ownership
-- Governance
+Added principles:
+- VI. Harness Growth Is Reviewable
+Added sections: none
 Removed sections: N/A
-Templates requiring updates: none; evaluation-local Spec Kit workspace is being introduced.
+Templates requiring updates: future specs and plans must include migration-candidate evidence before E2E thinning, CI wiring, cadence changes, or repair mode work.
 Follow-up items: none.
 -->
 
@@ -103,6 +97,12 @@ When a lower-layer test covers the same responsibility with clearer failure
 localization, the E2E test SHOULD be reduced to a representative smoke or flow
 check instead of retaining detailed combinatorial coverage.
 
+Before any existing E2E test is thinned, removed, or replaced, the harness MUST
+produce a reviewable migration-candidate report. The report MUST name the
+current E2E test, the behavior it covers, the proposed owner layer, the
+lower-layer evidence that already exists or must be added, and the E2E smoke
+coverage that will remain.
+
 Rationale: E2E tests are valuable for confidence but expensive for diagnosis.
 The harness must keep them focused on behavior that only E2E can validate.
 
@@ -127,6 +127,33 @@ state rather than continuing to mutate files.
 Rationale: an automatic repair loop is only useful when its changes are
 reviewable and its success criteria are stricter than "the current failure
 disappeared".
+
+### VI. Harness Growth Is Reviewable
+
+The harness MUST grow through explicit, reviewable artifacts before behavior is
+changed. A new capability that changes evaluation behavior MUST first define
+what decision it helps a human make and which existing evidence it consumes.
+
+The default growth order is:
+
+1. produce a migration-candidate report from ownership and current tests
+2. review and approve which existing E2E cases may be thinned
+3. wire the stable gate into CI
+4. define the cadence for full and collect-all runs
+5. add repair mode only after the previous artifacts are stable
+
+New growth features MUST NOT silently mutate product code, root E2E tests,
+root CI configuration, or package scripts. If a growth task needs to change
+outside `evaluation/`, its spec and plan MUST state the exact files, rationale,
+blast radius, and rollback path.
+
+Generated growth reports MUST be committed only when they are stable guidance
+or templates. Per-run reports, traces, logs, and screenshots remain operational
+artifacts under `evaluation/runs/` and MUST stay uncommitted by default.
+
+Rationale: a harness that changes tests, CI, or repair behavior without a
+reviewable decision record becomes another source of hidden risk. Growth work
+must make the next human decision easier before it automates that decision.
 
 ## Test Layer Ownership
 
@@ -170,6 +197,6 @@ task. A task is compliant only when it states:
 - which test layer it affects
 - what evidence proves completion
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Ratified**: 2026-05-01
 **Last Amended**: 2026-05-01
