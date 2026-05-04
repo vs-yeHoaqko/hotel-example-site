@@ -2,6 +2,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { formatCommandDisplay } from "./command-format.mjs";
+import { collectLayerArtifacts } from "./layer-artifacts.mjs";
 import { redactArgv, redactEnv, redactText } from "./redaction.mjs";
 
 export async function executeLayer(layer, { repoRoot, runDirRel }) {
@@ -104,7 +105,10 @@ export async function executeLayer(layer, { repoRoot, runDirRel }) {
     skippedReason: null,
     counts,
     classification: null,
-    artifacts: collectArtifacts(layer.name, [stdoutArtifact, stderrArtifact]),
+    artifacts: collectLayerArtifacts(layer.name, [
+      stdoutArtifact,
+      stderrArtifact,
+    ]),
     stdout,
     stderr,
     startError: result.startError,
@@ -130,20 +134,6 @@ export function skippedLayerResult(layer, reason, classification = null) {
     classification,
     artifacts: [],
   };
-}
-
-function collectArtifacts(layerName, baseArtifacts) {
-  const artifacts = [...baseArtifacts];
-  if (layerName === "environment") {
-    artifacts.push("artifacts/environment-preflight.json");
-  } else if (layerName === "integration") {
-    artifacts.push("artifacts/integration-results.json");
-  } else if (layerName === "smoke-e2e") {
-    artifacts.push("artifacts/smoke-results.json");
-  } else if (layerName === "full-e2e") {
-    artifacts.push("artifacts/full-e2e-results.json");
-  }
-  return artifacts;
 }
 
 function resolveExecutableArgv(argv) {
