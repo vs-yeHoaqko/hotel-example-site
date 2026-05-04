@@ -8,6 +8,7 @@ test("renders required sections, source paths, warnings, and no-flaky wording", 
   assert.match(report, /^# Run Health Report/m);
   assert.match(report, /^## Metadata/m);
   assert.match(report, /^## Selected Runs/m);
+  assert.match(report, /^## Trend Summary/m);
   assert.match(report, /^## Preflight Evidence/m);
   assert.match(report, /^## Slow Layers/m);
   assert.match(report, /^## Slow Tests/m);
@@ -19,6 +20,7 @@ test("renders required sections, source paths, warnings, and no-flaky wording", 
   assert.match(report, /`artifacts\/smoke-results\.json`/);
   assert.match(report, /No flaky evidence observed in selected runs\./);
   assert.match(report, /No environment evidence observed in selected runs\./);
+  assert.match(report, /Trend comparison is limited/);
   assert.match(report, /artifact missing/);
 });
 
@@ -92,6 +94,27 @@ function baseModel(overrides = {}) {
         artifacts: ["artifacts/smoke-results.json"],
       },
     ],
+    trendSummary: {
+      selectedRunCount: 1,
+      statusCounts: {
+        passed: 1,
+      },
+      limitedEvidence: true,
+      layerTrends: [
+        {
+          layer: "smoke-e2e",
+          latestRunId: "run-a",
+          latestStatus: "passed",
+          latestDurationMs: 31000,
+          previousRunId: null,
+          previousDurationMs: null,
+          deltaMs: null,
+          observationCount: 1,
+          slowCount: 1,
+          failedCount: 0,
+        },
+      ],
+    },
     slowTests: [
       {
         runId: "run-a",

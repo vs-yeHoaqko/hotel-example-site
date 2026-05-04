@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "reportPath": "evaluation/reports/test-meaningfulness.md",
+  "testRoots": [
+    {
+      "path": "e2e",
+      "defaultLayer": "root-e2e",
+      "source": "root-suite"
+    },
+    {
+      "path": "evaluation/tests/e2e",
+      "defaultLayer": "evaluation-smoke",
+      "source": "evaluation"
+    },
+    {
+      "path": "evaluation/tests/integration",
+      "defaultLayer": "evaluation-integration",
+      "source": "evaluation"
+    },
+    {
+      "path": "evaluation/tests/unit",
+      "defaultLayer": "harness-unit",
+      "source": "evaluation"
+    }
+  ]
+}

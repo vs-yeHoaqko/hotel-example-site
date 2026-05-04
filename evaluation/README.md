@@ -74,15 +74,16 @@ evaluation/reports/run-health.md
 
 The report includes:
 
-| Section                | Meaning                                                                 |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `Selected Runs`        | Latest readable runs, mode, target, status, dirty state, and summaries. |
-| `Preflight Evidence`   | Runtime checks from `artifacts/environment-preflight.json`.             |
-| `Slow Layers`          | Layers whose duration exceeds `run-health.config.json` thresholds.      |
-| `Slow Tests`           | Top Playwright test observations above the configured slow threshold.   |
-| `Instability Evidence` | Failed, timed-out, interrupted, unexpected, or retried test evidence.   |
-| `Environment Evidence` | Tooling, sandbox, browser install, process, or server-start evidence.   |
-| `Warnings`             | Missing, malformed, or incomplete evidence that did not stop reporting. |
+| Section                | Meaning                                                                   |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `Selected Runs`        | Latest readable runs, mode, target, status, dirty state, and summaries.   |
+| `Trend Summary`        | Selected-run status counts and per-layer latest/previous duration deltas. |
+| `Preflight Evidence`   | Runtime checks from `artifacts/environment-preflight.json`.               |
+| `Slow Layers`          | Layers whose duration exceeds `run-health.config.json` thresholds.        |
+| `Slow Tests`           | Top Playwright test observations above the configured slow threshold.     |
+| `Instability Evidence` | Failed, timed-out, interrupted, unexpected, or retried test evidence.     |
+| `Environment Evidence` | Tooling, sandbox, browser install, process, or server-start evidence.     |
+| `Warnings`             | Missing, malformed, or incomplete evidence that did not stop reporting.   |
 
 The review policy lives in:
 
@@ -93,6 +94,33 @@ evaluation/config/run-health.config.json
 Slow/flaky evidence is advisory. It does not mark tests flaky, skip tests,
 change timeouts, thin E2E assertions, change CI triggers, or run repair mode.
 Use it to decide where the next harness improvement should focus.
+
+## Test Meaningfulness Report
+
+The harness can also inventory executable test evidence without running product
+tests:
+
+```sh
+node evaluation/bin/generate-test-meaningfulness.mjs
+```
+
+The command scans configured test roots and writes:
+
+```text
+evaluation/reports/test-meaningfulness.md
+```
+
+The report separates:
+
+| Dimension  | Meaning                                                                             |
+| ---------- | ----------------------------------------------------------------------------------- |
+| Layer      | Root E2E, evaluation smoke, integration, product unit, or harness unit.             |
+| Source     | Upstream/root suite versus fork-created evaluation tests.                           |
+| Category   | Product journey, navigation, page-local behavior, domain rule, or harness contract. |
+| Assertions | Assertion-like checks observed in each test body.                                   |
+
+This is a deterministic inventory, not semantic coverage instrumentation. It
+flags tests with no assertion-like checks as weak signals for human review.
 
 ## Environment Preflight
 
@@ -150,9 +178,11 @@ sync operations cannot accidentally push to the original repository.
 
 Each CI run attempts to upload `evaluation/runs/**` as an artifact, even when
 the evaluation command fails. CI also attempts to generate and upload
-`evaluation/reports/run-health.md` with the same artifact. Use the uploaded
-`summary.md`, `summary.json`, `run-health.md`, logs, screenshots, videos, and
-traces as the starting point for diagnosis.
+`evaluation/reports/run-health.md` and
+`evaluation/reports/test-meaningfulness.md` with the same artifact. Use the
+uploaded `summary.md`, `summary.json`, `run-health.md`,
+`test-meaningfulness.md`, logs, screenshots, videos, and traces as the starting
+point for diagnosis.
 
 Run all configured layers, including the existing full E2E suite:
 

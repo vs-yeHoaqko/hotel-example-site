@@ -29,6 +29,7 @@ export function renderRunHealthReport(model) {
   }
 
   renderSelectedRuns(lines, model.selectedRuns);
+  renderTrendSummary(lines, model.trendSummary);
   renderEvidence(lines, "Preflight Evidence", model.preflightEvidence ?? [], {
     empty: "No preflight evidence found in selected runs.",
   });
@@ -48,6 +49,58 @@ export function renderRunHealthReport(model) {
   renderRecommendedReviewFocus(lines, model.recommendedReviewFocus);
 
   return `${lines.join("\n")}\n`;
+}
+
+function renderTrendSummary(lines, trendSummary) {
+  lines.push("", "## Trend Summary", "");
+  if (!trendSummary) {
+    lines.push("Trend comparison is unavailable.");
+    return;
+  }
+
+  lines.push(`Selected run count: ${trendSummary.selectedRunCount}`);
+  if (trendSummary.limitedEvidence) {
+    lines.push(
+      "Trend comparison is limited because fewer than two readable runs were selected.",
+    );
+  }
+
+  lines.push("", "### Selected Run Status Counts", "");
+  const statusCounts = Object.entries(trendSummary.statusCounts);
+  if (statusCounts.length === 0) {
+    lines.push("- None");
+  } else {
+    for (const [status, count] of statusCounts) {
+      lines.push(`- ${status}: ${count}`);
+    }
+  }
+
+  lines.push(
+    "",
+    "### Layer Duration Trends",
+    "",
+    "| Layer | Latest Run | Latest Status | Latest Duration | Previous Duration | Delta | Observations | Slow | Failed |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+  );
+  if (trendSummary.layerTrends.length === 0) {
+    lines.push("| None | - | - | - | - | - | - | - | - |");
+    return;
+  }
+  for (const trend of trendSummary.layerTrends) {
+    lines.push(
+      formatRow([
+        escapeTable(trend.layer),
+        escapeTable(trend.latestRunId ?? "-"),
+        escapeTable(trend.latestStatus),
+        formatDuration(trend.latestDurationMs),
+        formatDuration(trend.previousDurationMs),
+        formatDelta(trend.deltaMs),
+        String(trend.observationCount),
+        String(trend.slowCount),
+        String(trend.failedCount),
+      ]),
+    );
+  }
 }
 
 function renderSelectedRuns(lines, selectedRuns) {
@@ -200,6 +253,16 @@ function formatInlineList(items) {
 
 function formatDuration(value) {
   return typeof value === "number" ? `${value}ms` : "-";
+}
+
+function formatDelta(value) {
+  if (typeof value !== "number") {
+    return "-";
+  }
+  if (value > 0) {
+    return `+${value}ms`;
+  }
+  return `${value}ms`;
 }
 
 function formatLocation(file, line) {

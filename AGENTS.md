@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/008-environment-preflight/plan.md`
+`evaluation/specs/010-ci-health-trends/plan.md`
 
 <!-- SPECKIT END -->
 
