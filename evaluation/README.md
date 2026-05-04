@@ -51,6 +51,42 @@ E2E assertion was removed or reduced; `keep_e2e` means the browser journey
 stays as representative end-to-end coverage; `retained` and `deferred` are
 available for reviewed candidates that must stay unchanged.
 
+## Slow And Flaky Evidence Report
+
+The harness can summarize recent run health without executing product tests:
+
+```sh
+node evaluation/bin/generate-run-health.mjs
+```
+
+The command reads existing machine-readable evidence under `evaluation/runs/`
+and writes stable review guidance to:
+
+```text
+evaluation/reports/run-health.md
+```
+
+The report includes:
+
+| Section                | Meaning                                                                 |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `Selected Runs`        | Latest readable runs, mode, target, status, dirty state, and summaries. |
+| `Slow Layers`          | Layers whose duration exceeds `run-health.config.json` thresholds.      |
+| `Slow Tests`           | Top Playwright test observations above the configured slow threshold.   |
+| `Instability Evidence` | Failed, timed-out, interrupted, unexpected, or retried test evidence.   |
+| `Environment Evidence` | Tooling, sandbox, browser install, process, or server-start evidence.   |
+| `Warnings`             | Missing, malformed, or incomplete evidence that did not stop reporting. |
+
+The review policy lives in:
+
+```text
+evaluation/config/run-health.config.json
+```
+
+Slow/flaky evidence is advisory. It does not mark tests flaky, skip tests,
+change timeouts, thin E2E assertions, change CI triggers, or run repair mode.
+Use it to decide where the next harness improvement should focus.
+
 ## Commands
 
 Run the default gate:

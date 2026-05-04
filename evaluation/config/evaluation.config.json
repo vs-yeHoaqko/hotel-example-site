@@ -34,7 +34,9 @@
         "--test",
         "evaluation/tests/unit/billing.test.mjs",
         "evaluation/tests/unit/thinning-decision-model.test.mjs",
-        "evaluation/tests/unit/migration-candidate-report.test.mjs"
+        "evaluation/tests/unit/migration-candidate-report.test.mjs",
+        "evaluation/tests/unit/run-health-model.test.mjs",
+        "evaluation/tests/unit/run-health-report.test.mjs"
       ],
       "dependsOn": [],
       "requires": ["node"]
