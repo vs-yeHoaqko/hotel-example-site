@@ -40,8 +40,11 @@
     `blocked_missing_lower_layer=0`, and `keep_e2e=4`.
 
 - [x] 5. T005 Validate formatting, integration coverage, and gate.
-  - Files: generated run artifacts only under ignored `evaluation/runs/`
+  - Files: `evaluation/.gitattributes`, generated run artifacts only under
+    ignored `evaluation/runs/`
   - Success: Prettier, integration layer, and gate pass.
   - Evidence: integration layer passed 15 tests, and
     `node evaluation/bin/run-evaluation.mjs --mode gate` passed in
     `evaluation/runs/20260504T004127Z-003-lower-layer-reservation-coverage-ab6c18a`.
+    `evaluation/.gitattributes` fixes evaluation checkout line endings to LF so
+    the static layer remains reproducible on Windows.

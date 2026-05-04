@@ -21,6 +21,7 @@ Then the stable migration-candidate report is regenerated.
 - `evaluation/tests/integration/reservation-form.spec.mjs`
 - `evaluation/config/migration-candidates.config.json`
 - `evaluation/reports/migration-candidates.md`
+- `evaluation/.gitattributes`
 - `evaluation/specs/003-lower-layer-reservation-coverage/spec.md`
 - `evaluation/specs/003-lower-layer-reservation-coverage/plan.md`
 - `evaluation/specs/003-lower-layer-reservation-coverage/tasks.md`
@@ -40,3 +41,5 @@ Then the stable migration-candidate report is regenerated.
   later human review step.
 - Keep unrelated screen-operation coverage deferred unless it is required for
   the current migration evidence.
+- Keep evaluation files checked out with LF line endings so the evaluation
+  gate's Prettier static layer is reproducible on Windows.
