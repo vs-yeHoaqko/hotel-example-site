@@ -422,6 +422,6 @@
 ## Next Steps
 
 - Review `ready_to_thin` candidates before changing root E2E tests.
-- Add lower-layer coverage for `blocked_missing_lower_layer` candidates before thinning those assertions.
+- Treat the newly ready candidates as requiring human thinning approval before root E2E edits.
 - Keep `keep_e2e` journeys as representative browser-flow smoke coverage.
 - Do not edit, skip, or delete root E2E tests until a human approves the specific thinning changes.
