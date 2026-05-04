@@ -50,12 +50,23 @@ The human-readable view is generated into:
 evaluation/reports/migration-candidates.md
 ```
 
+The execution-state view is generated into:
+
+```text
+evaluation/reports/thinning-execution.md
+```
+
 Read the report by candidate ID. Each reviewed candidate shows its readiness
 status, thinning outcome, decision reason, lower-layer evidence, remaining E2E
 coverage, outside files, and conflict risk. `thinned` means the detailed root
 E2E assertion was removed or reduced; `keep_e2e` means the browser journey
 stays as representative end-to-end coverage; `retained` and `deferred` are
 available for reviewed candidates that must stay unchanged.
+
+`thinning-execution.md` translates those decisions into execution states:
+`approved_to_thin`, `blocked`, `deferred`, and `keep_e2e`. Report generation
+does not rewrite root E2E files. Root-suite edits remain explicit,
+human-reviewed changes tied to candidate IDs.
 
 ## Slow And Flaky Evidence Report
 
@@ -78,6 +89,7 @@ The report includes:
 | ---------------------- | ------------------------------------------------------------------------- |
 | `Selected Runs`        | Latest readable runs, mode, target, status, dirty state, and summaries.   |
 | `Trend Summary`        | Selected-run status counts and per-layer latest/previous duration deltas. |
+| `Baseline Comparison`  | Latest layer health compared with committed baseline tolerances.          |
 | `Preflight Evidence`   | Runtime checks from `artifacts/environment-preflight.json`.               |
 | `Slow Layers`          | Layers whose duration exceeds `run-health.config.json` thresholds.        |
 | `Slow Tests`           | Top Playwright test observations above the configured slow threshold.     |
@@ -90,6 +102,15 @@ The review policy lives in:
 ```text
 evaluation/config/run-health.config.json
 ```
+
+The committed run-health baseline lives in:
+
+```text
+evaluation/baselines/run-health-baseline.json
+```
+
+Baseline updates should be explicit code-review changes. They do not require
+committing `evaluation/runs/` artifacts.
 
 Slow/flaky evidence is advisory. It does not mark tests flaky, skip tests,
 change timeouts, thin E2E assertions, change CI triggers, or run repair mode.
@@ -121,6 +142,40 @@ The report separates:
 
 This is a deterministic inventory, not semantic coverage instrumentation. It
 flags tests with no assertion-like checks as weak signals for human review.
+
+## Quality Gate Report
+
+The harness can consolidate run health, test meaningfulness, diagnostics, and
+thinning execution evidence into one gate result:
+
+```sh
+node evaluation/bin/generate-quality-gate.mjs
+```
+
+The command writes:
+
+```text
+evaluation/reports/quality-gate.md
+```
+
+The gate status is:
+
+| Status | Meaning                                                                  |
+| ------ | ------------------------------------------------------------------------ |
+| `pass` | No configured warning or failure threshold was breached.                 |
+| `warn` | At least one warning-first threshold was breached.                       |
+| `fail` | At least one fail-enforced threshold was breached and the command fails. |
+
+Initial thresholds are warning-first. They are defined in:
+
+```text
+evaluation/config/quality-gate.config.json
+```
+
+The current minimum meaningfulness thresholds are intentionally conservative.
+They detect sudden coverage drops without failing the current fork on normal
+growth. Timing and baseline thresholds should be tightened only after stable CI
+evidence exists.
 
 ## Environment Preflight
 
@@ -178,11 +233,14 @@ sync operations cannot accidentally push to the original repository.
 
 Each CI run attempts to upload `evaluation/runs/**` as an artifact, even when
 the evaluation command fails. CI also attempts to generate and upload
-`evaluation/reports/run-health.md` and
-`evaluation/reports/test-meaningfulness.md` with the same artifact. Use the
-uploaded `summary.md`, `summary.json`, `run-health.md`,
-`test-meaningfulness.md`, logs, screenshots, videos, and traces as the starting
-point for diagnosis.
+`evaluation/reports/migration-candidates.md`,
+`evaluation/reports/thinning-execution.md`,
+`evaluation/reports/run-health.md`,
+`evaluation/reports/test-meaningfulness.md`, and
+`evaluation/reports/quality-gate.md` with the same artifact. Use the uploaded
+`summary.md`, `summary.json`, `quality-gate.md`, `run-health.md`,
+`test-meaningfulness.md`, `thinning-execution.md`, logs, screenshots, videos,
+and traces as the starting point for diagnosis.
 
 Run all configured layers, including the existing full E2E suite:
 

@@ -5,6 +5,7 @@ import { createOwnership } from "./ownership.mjs";
 import {
   attachThinningDecisions,
   countThinningOutcomes,
+  createThinningExecutionSummary,
   loadThinningDecisionSet,
 } from "./thinning-decision-model.mjs";
 
@@ -56,11 +57,13 @@ export async function createMigrationCandidateModel({
       ownershipSource: "evaluation/lib/ownership.mjs",
       inventorySource: "e2e/**/*.spec.ts",
       reportPath: "evaluation/reports/migration-candidates.md",
+      thinningExecutionReportPath: "evaluation/reports/thinning-execution.md",
     },
     counts: countByStatus(sortedCandidates),
     thinningDecisionCounts: countThinningOutcomes(
       thinningDecisionSet.decisions,
     ),
+    thinningExecutionSummary: createThinningExecutionSummary(sortedCandidates),
     groups,
     inventoryWarnings: warnings,
     candidates: sortedCandidates,

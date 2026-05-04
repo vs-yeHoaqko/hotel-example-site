@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   attachThinningDecisions,
   countThinningOutcomes,
+  createThinningExecutionSummary,
   validateThinningDecisionSet,
 } from "../../lib/thinning-decision-model.mjs";
 
@@ -39,6 +40,44 @@ test("validates and sorts thinned, retained, deferred, and keep_e2e outcomes", (
     deferred: 1,
     keep_e2e: 1,
   });
+});
+
+test("summarizes thinning execution states without rewriting root E2E files", () => {
+  const decisionSet = validateThinningDecisionSet(
+    decisionConfig([
+      decision({ candidateId: "ready-thinned" }),
+      decision({
+        candidateId: "ready-retained",
+        outcome: "retained",
+        reason: "Reviewed and intentionally left in root E2E.",
+      }),
+      decision({
+        candidateId: "ready-deferred",
+        outcome: "deferred",
+        reason: "Lower-layer evidence was not specific enough.",
+      }),
+      decision({
+        candidateId: "keep-journey",
+        outcome: "keep_e2e",
+        ownerLayer: "e2e",
+      }),
+    ]),
+    { candidates: sampleCandidates() },
+  );
+  const candidates = attachThinningDecisions(sampleCandidates(), decisionSet);
+  const summary = createThinningExecutionSummary(candidates);
+
+  assert.deepEqual(summary.counts, {
+    approved_to_thin: 1,
+    blocked: 1,
+    deferred: 1,
+    keep_e2e: 1,
+  });
+  assert.equal(
+    summary.decisions.find((item) => item.candidateId === "ready-thinned")
+      .executionState,
+    "approved_to_thin",
+  );
 });
 
 test("attaches thinning decisions to migration candidates", () => {

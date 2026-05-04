@@ -41,6 +41,12 @@ export async function loadRunHealthConfig({
     inputPath: config.reportPath,
     fieldName: "reportPath",
   });
+  const baselinePath = normalizeEvaluationPath({
+    repoRoot,
+    inputPath:
+      config.baselinePath ?? "evaluation/baselines/run-health-baseline.json",
+    fieldName: "baselinePath",
+  });
 
   const layerThresholdsMs = config.layerThresholdsMs ?? {};
   for (const [layerName, thresholdMs] of Object.entries(layerThresholdsMs)) {
@@ -52,6 +58,7 @@ export async function loadRunHealthConfig({
     configPath: normalizedConfigPath,
     runsDirectory: runsPath,
     reportPath: outputPath,
+    baselinePath,
     maxRuns: assertPositiveInteger(config.maxRuns, "maxRuns"),
     topSlowTests: assertPositiveInteger(config.topSlowTests, "topSlowTests"),
     layerThresholdsMs,

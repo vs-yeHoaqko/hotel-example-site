@@ -37,6 +37,60 @@ export function createGuidance(diagnostic) {
     };
   }
 
+  if (diagnostic.classification === "flaky") {
+    return {
+      action: "investigate_flaky",
+      confidence: CONFIDENCE.MEDIUM,
+      rationale:
+        "Retry or intermittent evidence suggests a flaky test or environment-sensitive behavior.",
+      likelyTargets: [
+        {
+          kind: "evaluation_file",
+          path: diagnostic.source?.path ?? null,
+          label: "Flaky evidence source",
+          rationale:
+            "Review retry artifacts and timing-sensitive assertions before changing product behavior.",
+        },
+      ],
+    };
+  }
+
+  if (diagnostic.classification === "harness_bug") {
+    return {
+      action: "inspect_test",
+      confidence: CONFIDENCE.MEDIUM,
+      rationale:
+        "The failure classification points to harness code, fixtures, report generation, or command setup.",
+      likelyTargets: [
+        {
+          kind: "evaluation_file",
+          path: diagnostic.source?.path ?? null,
+          label: "Evaluation harness artifact",
+          rationale:
+            "Harness-classified diagnostics should be inspected in evaluation code or generated evidence.",
+        },
+      ],
+    };
+  }
+
+  if (diagnostic.classification === "product_regression") {
+    return {
+      action: "inspect_product",
+      confidence: CONFIDENCE.MEDIUM,
+      rationale:
+        "The failure classification points to product-visible behavior.",
+      likelyTargets: [
+        {
+          kind: "behavior_area",
+          path: null,
+          label: "Product behavior evidence",
+          rationale:
+            "Inspect the product behavior area identified by the failing test and artifacts.",
+        },
+      ],
+    };
+  }
+
   if (isBilling(text)) {
     return {
       action: "inspect_product",

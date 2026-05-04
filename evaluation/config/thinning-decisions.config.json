@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "scope": "reservation-billing",
   "sourceCandidates": "evaluation/config/migration-candidates.config.json",
+  "executionStatePolicy": {
+    "thinned": "approved_to_thin",
+    "retained": "blocked",
+    "deferred": "deferred",
+    "keep_e2e": "keep_e2e"
+  },
   "decisions": [
     {
       "candidateId": "en-blank-required-validation",

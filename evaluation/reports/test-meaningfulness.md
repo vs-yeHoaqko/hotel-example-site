@@ -9,10 +9,10 @@
 
 ## Summary
 
-- Total discovered tests: 136
-- Meaningful tests: 136
+- Total discovered tests: 144
+- Meaningful tests: 144
 - Weak-signal tests: 0
-- Assertion-like checks: 572
+- Assertion-like checks: 598
 
 ## By Layer
 
@@ -20,7 +20,7 @@
 | ---------------------- | ----- | ---------- | ---------- |
 | evaluation-integration | 9     | 9          | 27         |
 | evaluation-smoke       | 3     | 3          | 6          |
-| harness-unit           | 41    | 41         | 142        |
+| harness-unit           | 49    | 49         | 168        |
 | product-unit           | 3     | 3          | 3          |
 | root-e2e               | 80    | 80         | 394        |
 
@@ -28,14 +28,14 @@
 
 | Name       | Tests | Meaningful | Assertions |
 | ---------- | ----- | ---------- | ---------- |
-| evaluation | 56    | 56         | 178        |
+| evaluation | 64    | 64         | 204        |
 | root-suite | 80    | 80         | 394        |
 
 ## By Category
 
 | Name                | Tests | Meaningful | Assertions |
 | ------------------- | ----- | ---------- | ---------- |
-| harness-contract    | 41    | 41         | 142        |
+| harness-contract    | 49    | 49         | 168        |
 | page-local-behavior | 9     | 9          | 27         |
 | product-domain-rule | 3     | 3          | 3          |
 | product-journey     | 60    | 60         | 356        |
@@ -67,18 +67,20 @@
 | `evaluation/tests/e2e/smoke.spec.mjs`                       | evaluation-smoke       | evaluation | 3     | 3          | 6          |
 | `evaluation/tests/integration/reservation-form.spec.mjs`    | evaluation-integration | evaluation | 9     | 9          | 27         |
 | `evaluation/tests/unit/billing.test.mjs`                    | product-unit           | evaluation | 3     | 3          | 3          |
-| `evaluation/tests/unit/diagnostic-guidance.test.mjs`        | harness-unit           | evaluation | 6     | 6          | 18         |
+| `evaluation/tests/unit/diagnostic-guidance.test.mjs`        | harness-unit           | evaluation | 7     | 7          | 21         |
 | `evaluation/tests/unit/diagnostics.test.mjs`                | harness-unit           | evaluation | 5     | 5          | 15         |
 | `evaluation/tests/unit/environment-preflight.test.mjs`      | harness-unit           | evaluation | 4     | 4          | 10         |
-| `evaluation/tests/unit/failure-classifier.test.mjs`         | harness-unit           | evaluation | 1     | 1          | 1          |
+| `evaluation/tests/unit/failure-classifier.test.mjs`         | harness-unit           | evaluation | 2     | 2          | 5          |
 | `evaluation/tests/unit/migration-candidate-report.test.mjs` | harness-unit           | evaluation | 3     | 3          | 10         |
 | `evaluation/tests/unit/playwright-diagnostics.test.mjs`     | harness-unit           | evaluation | 3     | 3          | 10         |
-| `evaluation/tests/unit/run-health-model.test.mjs`           | harness-unit           | evaluation | 7     | 7          | 31         |
-| `evaluation/tests/unit/run-health-report.test.mjs`          | harness-unit           | evaluation | 2     | 2          | 21         |
+| `evaluation/tests/unit/quality-gate-model.test.mjs`         | harness-unit           | evaluation | 3     | 3          | 7          |
+| `evaluation/tests/unit/quality-gate-report.test.mjs`        | harness-unit           | evaluation | 1     | 1          | 6          |
+| `evaluation/tests/unit/run-health-model.test.mjs`           | harness-unit           | evaluation | 8     | 8          | 34         |
+| `evaluation/tests/unit/run-health-report.test.mjs`          | harness-unit           | evaluation | 2     | 2          | 22         |
 | `evaluation/tests/unit/summary-schema.test.mjs`             | harness-unit           | evaluation | 2     | 2          | 3          |
 | `evaluation/tests/unit/test-meaningfulness-model.test.mjs`  | harness-unit           | evaluation | 2     | 2          | 9          |
 | `evaluation/tests/unit/test-meaningfulness-report.test.mjs` | harness-unit           | evaluation | 1     | 1          | 7          |
-| `evaluation/tests/unit/thinning-decision-model.test.mjs`    | harness-unit           | evaluation | 5     | 5          | 7          |
+| `evaluation/tests/unit/thinning-decision-model.test.mjs`    | harness-unit           | evaluation | 6     | 6          | 9          |
 
 ## Warnings
 
@@ -87,6 +89,6 @@
 ## Interpretation
 
 - Product behavior evidence: 95 tests.
-- Harness contract evidence: 41 tests.
+- Harness contract evidence: 49 tests.
 - Root E2E tests are broad behavior evidence; evaluation integration and product unit tests are lower-layer evidence.
 - Weak-signal tests should be reviewed before treating their count as meaningful coverage.

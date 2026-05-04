@@ -9,6 +9,7 @@ test("renders required sections, source paths, warnings, and no-flaky wording", 
   assert.match(report, /^## Metadata/m);
   assert.match(report, /^## Selected Runs/m);
   assert.match(report, /^## Trend Summary/m);
+  assert.match(report, /^## Baseline Comparison/m);
   assert.match(report, /^## Preflight Evidence/m);
   assert.match(report, /^## Slow Layers/m);
   assert.match(report, /^## Slow Tests/m);
@@ -153,6 +154,32 @@ function baseModel(overrides = {}) {
     recommendedReviewFocus: [
       "Review slow layers against configured thresholds.",
     ],
+    baselineComparison: {
+      available: true,
+      baselinePath: "evaluation/baselines/run-health-baseline.json",
+      updatedFrom: "unit fixture",
+      notes: ["baseline note"],
+      summary: {
+        improved: 0,
+        unchanged: 1,
+        regressed: 0,
+        missing: 0,
+        new: 0,
+      },
+      layers: [
+        {
+          layer: "smoke-e2e",
+          status: "unchanged",
+          runId: "run-a",
+          observedStatus: "passed",
+          observedDurationMs: 31000,
+          baselineStatus: "passed",
+          baselineDurationMs: 30000,
+          toleranceMs: 2000,
+          message: "Layer is within baseline tolerance.",
+        },
+      ],
+    },
     ...overrides,
   };
 }

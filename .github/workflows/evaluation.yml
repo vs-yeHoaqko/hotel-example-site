@@ -70,12 +70,18 @@ jobs:
         env:
           USE_DEPLOYED_SITE: ${{ steps.evaluation.outputs.use_deployed_site }}
         run: node evaluation/bin/run-evaluation.mjs --mode "${{ steps.evaluation.outputs.mode }}"
+      - name: Generate migration and thinning reports
+        if: ${{ always() }}
+        run: node evaluation/bin/generate-migration-candidates.mjs
       - name: Generate run health report
         if: ${{ always() }}
         run: node evaluation/bin/generate-run-health.mjs
       - name: Generate test meaningfulness report
         if: ${{ always() }}
         run: node evaluation/bin/generate-test-meaningfulness.mjs
+      - name: Generate quality gate report
+        if: ${{ always() }}
+        run: node evaluation/bin/generate-quality-gate.mjs
       - name: Upload evaluation evidence
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
@@ -83,7 +89,10 @@ jobs:
           name: evaluation-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             evaluation/runs/**
+            evaluation/reports/migration-candidates.md
+            evaluation/reports/thinning-execution.md
             evaluation/reports/run-health.md
             evaluation/reports/test-meaningfulness.md
+            evaluation/reports/quality-gate.md
           if-no-files-found: warn
           retention-days: 14

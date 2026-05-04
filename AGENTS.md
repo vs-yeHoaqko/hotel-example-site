@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/010-ci-health-trends/plan.md`
+`evaluation/specs/011-evaluation-quality-gate/plan.md`
 
 <!-- SPECKIT END -->
 
