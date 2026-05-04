@@ -1,14 +1,11 @@
+import { isEnvironmentMessage } from "./environment-signals.mjs";
+
 export function classifyFailure(layer, result) {
   if (result.timedOut) {
     return "timeout";
   }
   const output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
-  if (
-    result.startError ||
-    /ENOENT|not recognized|command not found|Cannot find module|Executable doesn't exist|playwright install|browserType\.launch/i.test(
-      output,
-    )
-  ) {
+  if (result.startError || isEnvironmentMessage(output)) {
     return "environment";
   }
   if (/Timeout|Test timeout/i.test(output)) {

@@ -17,6 +17,7 @@ The default gate currently runs these layers in order:
 
 | Layer         | Purpose                                                                                |
 | ------------- | -------------------------------------------------------------------------------------- |
+| `environment` | Checks local harness runtime, subprocess spawn, required tools, and browser files.     |
 | `static`      | Checks evaluation files with Prettier.                                                 |
 | `unit`        | Runs focused Node tests for billing logic and evaluation model/report contracts.       |
 | `integration` | Runs page-local Playwright checks for reservation form behavior.                       |
@@ -24,6 +25,11 @@ The default gate currently runs these layers in order:
 
 `full-e2e` is available in explicit modes and runs the existing root `e2e/`
 suite after the gate layers.
+
+The full E2E evaluation intentionally uses one worker locally and in CI. The
+root suite contains popup-heavy reservation completion journeys; limiting
+workers reduces local dev-server and browser contention without changing root
+E2E assertions, retries, or timeouts.
 
 ## E2E Thinning Records
 
@@ -71,6 +77,7 @@ The report includes:
 | Section                | Meaning                                                                 |
 | ---------------------- | ----------------------------------------------------------------------- |
 | `Selected Runs`        | Latest readable runs, mode, target, status, dirty state, and summaries. |
+| `Preflight Evidence`   | Runtime checks from `artifacts/environment-preflight.json`.             |
 | `Slow Layers`          | Layers whose duration exceeds `run-health.config.json` thresholds.      |
 | `Slow Tests`           | Top Playwright test observations above the configured slow threshold.   |
 | `Instability Evidence` | Failed, timed-out, interrupted, unexpected, or retried test evidence.   |
@@ -86,6 +93,27 @@ evaluation/config/run-health.config.json
 Slow/flaky evidence is advisory. It does not mark tests flaky, skip tests,
 change timeouts, thin E2E assertions, change CI triggers, or run repair mode.
 Use it to decide where the next harness improvement should focus.
+
+## Environment Preflight
+
+The first gate layer is `environment`:
+
+```sh
+node evaluation/bin/check-environment.mjs
+```
+
+It checks whether the harness can spawn subprocesses, find required local CLI
+files, and find the Playwright Chromium executable. It does not start the
+product app, launch a browser, or run product tests.
+
+The preflight artifact is written to:
+
+```text
+evaluation/runs/<run-id>/artifacts/environment-preflight.json
+```
+
+If preflight fails, later required layers are skipped outside `collect-all` and
+the recommended action is `fix_environment`.
 
 ## Commands
 
@@ -121,8 +149,10 @@ repositories. The local `upstream` remote should keep its push URL disabled so
 sync operations cannot accidentally push to the original repository.
 
 Each CI run attempts to upload `evaluation/runs/**` as an artifact, even when
-the evaluation command fails. Use the uploaded `summary.md`, `summary.json`,
-logs, screenshots, videos, and traces as the starting point for diagnosis.
+the evaluation command fails. CI also attempts to generate and upload
+`evaluation/reports/run-health.md` with the same artifact. Use the uploaded
+`summary.md`, `summary.json`, `run-health.md`, logs, screenshots, videos, and
+traces as the starting point for diagnosis.
 
 Run all configured layers, including the existing full E2E suite:
 
@@ -230,9 +260,10 @@ The implementation has been verified with:
   sandbox-only diagnosis, run the same files with `--test-isolation=none`.
 - The smoke reservation completion journey is the timeout-prone gate test
   because it covers page navigation, popup handling, confirmation, modal
-  success, and window close. The smoke Playwright config uses a 60 second
-  per-test timeout to reduce false failures while keeping the layer timeout
-  bounded.
+  success. It intentionally stops at the success modal instead of waiting for
+  the popup window to close, because window-close events are not the behavior
+  the gate needs to own. The smoke Playwright config uses a 60 second per-test
+  timeout to reduce false failures while keeping the layer timeout bounded.
 
 ## Boundaries
 

@@ -1,12 +1,18 @@
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
 import test from "node:test";
 import {
   createRunHealthModel,
   loadRunHealthConfig,
 } from "../../lib/run-health-model.mjs";
+import {
+  createTempRepo,
+  layer,
+  writeConfig,
+  writeJson,
+  writePlaywrightResult,
+  writeRawFile,
+  writeSummary,
+} from "../fixtures/run-health-fixtures.mjs";
 
 test("validates config paths and limits", async () => {
   const repoRoot = await createTempRepo();
@@ -65,13 +71,10 @@ test("selects latest readable runs and records malformed or missing evidence war
       },
     ],
   );
-  await mkdir(path.join(repoRoot, "evaluation/runs/20260103T000000Z-bad"), {
-    recursive: true,
-  });
-  await writeFile(
-    path.join(repoRoot, "evaluation/runs/20260103T000000Z-bad/summary.json"),
+  await writeRawFile(
+    repoRoot,
+    "evaluation/runs/20260103T000000Z-bad/summary.json",
     "{not json",
-    "utf8",
   );
 
   const model = await createRunHealthModel({ repoRoot });
@@ -185,131 +188,94 @@ test("reports no flaky evidence when selected runs contain only expected passed 
   assert.equal(model.metadata.runsDirectory, "evaluation/runs");
 });
 
-async function createTempRepo() {
-  const repoRoot = await mkdtemp(path.join(os.tmpdir(), "run-health-"));
-  await mkdir(path.join(repoRoot, "evaluation/config"), { recursive: true });
-  await mkdir(path.join(repoRoot, "evaluation/runs"), { recursive: true });
-  return repoRoot;
-}
-
-async function writeConfig(repoRoot, overrides = {}) {
-  await writeJson(repoRoot, "evaluation/config/run-health.config.json", {
-    schemaVersion: 1,
-    runsDirectory: "evaluation/runs",
-    reportPath: "evaluation/reports/run-health.md",
-    maxRuns: 5,
-    topSlowTests: 10,
-    layerThresholdsMs: {
-      static: 5000,
-      unit: 5000,
-      integration: 40000,
-      "smoke-e2e": 30000,
-      "full-e2e": 45000,
-    },
-    testSlowThresholdMs: 3000,
-    ...overrides,
-  });
-}
-
-async function writeSummary(repoRoot, runId, overrides = {}) {
-  await writeJson(repoRoot, `evaluation/runs/${runId}/summary.json`, {
-    schemaVersion: 1,
-    runId,
-    mode: "gate",
-    target: "local",
-    repository: {
-      branch: "007-slow-flaky-evidence",
-      commit: "abc1234",
-      dirty: false,
-      changedFiles: [],
-    },
-    startedAt: "2026-01-01T00:00:00.000Z",
-    finishedAt: "2026-01-01T00:00:01.000Z",
-    status: "passed",
-    counts: {
-      passed: 1,
-      failed: 0,
-      skipped: 0,
-      timeout: 0,
-    },
-    recommendedNextAction: {
-      code: "none",
-      message: "No action required.",
-    },
-    diagnostics: [],
-    layers: [],
-    errors: [],
-    ...overrides,
-  });
-}
-
-function layer(overrides = {}) {
-  return {
-    name: "integration",
-    required: true,
-    status: "passed",
-    exitCode: 0,
-    durationMs: 1000,
-    timedOut: false,
-    skippedReason: null,
-    counts: {
-      passed: 1,
-      failed: 0,
-      skipped: 0,
-      timeout: 0,
-    },
-    classification: null,
-    artifacts: [],
-    ...overrides,
-  };
-}
-
-async function writePlaywrightResult(repoRoot, runId, artifactPath, cases) {
-  await writeJson(repoRoot, `evaluation/runs/${runId}/${artifactPath}`, {
-    config: {},
-    suites: [
-      {
-        title: "suite",
-        suites: [
-          {
-            title: "nested",
-            specs: cases.map((item, index) => ({
-              title: item.title,
-              ok: item.status === "passed",
-              file: `example-${index}.spec.mjs`,
-              line: index + 1,
-              tests: [
-                {
-                  expectedStatus: "passed",
-                  projectName: "chromium",
-                  status:
-                    item.status === "passed" && (item.retry ?? 0) === 0
-                      ? "expected"
-                      : "unexpected",
-                  results: [
-                    {
-                      status: item.status,
-                      duration: item.duration,
-                      errors: item.message ? [{ message: item.message }] : [],
-                      stdout: [],
-                      stderr: [],
-                      retry: item.retry ?? 0,
-                    },
-                  ],
-                },
-              ],
-            })),
-          },
-        ],
-      },
+test("extracts preflight evidence and no-environment wording state", async () => {
+  const repoRoot = await createTempRepo();
+  await writeConfig(repoRoot, { maxRuns: 1, testSlowThresholdMs: 1000 });
+  await writeSummary(repoRoot, "20260106T000000Z-e", {
+    layers: [
+      layer({
+        name: "environment",
+        durationMs: 100,
+        artifacts: ["artifacts/environment-preflight.json"],
+      }),
     ],
-    errors: [],
-    stats: {},
   });
-}
+  await writeJson(
+    repoRoot,
+    "evaluation/runs/20260106T000000Z-e/artifacts/environment-preflight.json",
+    {
+      schemaVersion: 1,
+      status: "passed",
+      startedAt: "2026-01-06T00:00:00.000Z",
+      finishedAt: "2026-01-06T00:00:00.100Z",
+      durationMs: 100,
+      checks: [
+        {
+          id: "node-spawn",
+          label: "Subprocess spawn",
+          status: "passed",
+          classification: null,
+          message: "Subprocess spawn is available.",
+          guidance: "No action required.",
+          details: {},
+        },
+      ],
+    },
+  );
 
-async function writeJson(repoRoot, relativePath, value) {
-  const absolutePath = path.join(repoRoot, relativePath);
-  await mkdir(path.dirname(absolutePath), { recursive: true });
-  await writeFile(absolutePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
-}
+  const model = await createRunHealthModel({ repoRoot });
+
+  assert.equal(model.preflightEvidence.length, 1);
+  assert.equal(model.environmentEvidence.length, 0);
+  assert.equal(model.noEnvironmentEvidenceObserved, true);
+  assert.equal(model.warnings.length, 0);
+});
+
+test("extracts failed preflight checks as environment evidence", async () => {
+  const repoRoot = await createTempRepo();
+  await writeConfig(repoRoot, { maxRuns: 1, testSlowThresholdMs: 1000 });
+  await writeSummary(repoRoot, "20260107T000000Z-f", {
+    status: "failed",
+    layers: [
+      layer({
+        name: "environment",
+        status: "failed",
+        classification: "environment",
+        durationMs: 100,
+        artifacts: ["artifacts/environment-preflight.json"],
+      }),
+    ],
+  });
+  await writeJson(
+    repoRoot,
+    "evaluation/runs/20260107T000000Z-f/artifacts/environment-preflight.json",
+    {
+      schemaVersion: 1,
+      status: "failed",
+      startedAt: "2026-01-07T00:00:00.000Z",
+      finishedAt: "2026-01-07T00:00:00.100Z",
+      durationMs: 100,
+      checks: [
+        {
+          id: "node-spawn",
+          label: "Subprocess spawn",
+          status: "failed",
+          classification: "environment",
+          message: "spawn EPERM",
+          guidance: "Fix local process execution permissions.",
+          details: {},
+        },
+      ],
+    },
+  );
+
+  const model = await createRunHealthModel({ repoRoot });
+
+  assert.equal(model.preflightEvidence.length, 1);
+  assert.equal(model.environmentEvidence.length, 2);
+  assert.equal(model.noEnvironmentEvidenceObserved, false);
+  assert.match(
+    model.environmentEvidence.map((item) => item.title).join("\n"),
+    /Subprocess spawn/,
+  );
+});

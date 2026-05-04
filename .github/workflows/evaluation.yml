@@ -70,11 +70,16 @@ jobs:
         env:
           USE_DEPLOYED_SITE: ${{ steps.evaluation.outputs.use_deployed_site }}
         run: node evaluation/bin/run-evaluation.mjs --mode "${{ steps.evaluation.outputs.mode }}"
+      - name: Generate run health report
+        if: ${{ always() }}
+        run: node evaluation/bin/generate-run-health.mjs
       - name: Upload evaluation evidence
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
         with:
           name: evaluation-${{ github.run_id }}-${{ github.run_attempt }}
-          path: evaluation/runs/**
+          path: |
+            evaluation/runs/**
+            evaluation/reports/run-health.md
           if-no-files-found: warn
           retention-days: 14

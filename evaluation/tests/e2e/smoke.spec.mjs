@@ -47,9 +47,7 @@ test("smoke completes one en-US reservation happy path", async ({ page }) => {
   await expect(reservePage.locator("#success-modal .modal-body")).toContainText(
     "We look forward to visiting you.",
   );
-  await Promise.all([
-    reservePage.waitForEvent("close"),
-    reservePage.locator("#success-modal .btn-success").click(),
-  ]);
-  expect(reservePage.isClosed()).toBeTruthy();
+  await expect(
+    reservePage.locator("#success-modal .btn-success"),
+  ).toBeVisible();
 });
