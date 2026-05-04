@@ -39,4 +39,7 @@ mise/*.local.toml
 # Agents
 .claude/
 .codex/
+.agents/*
+!.agents/skills/
+!.agents/skills/**
 .gemini/

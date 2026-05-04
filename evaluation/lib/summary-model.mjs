@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { createDiagnostics } from "./diagnostics.mjs";
 import { assertValid } from "./schema-validator.mjs";
 import { selectRecommendedAction } from "./recommended-action.mjs";
 
@@ -12,6 +13,7 @@ export async function createSummary({
   layers,
   errors = [],
   repoRoot = process.cwd(),
+  runDirRel = "",
 }) {
   const publicLayers = layers.map(stripPrivateFields);
   const classifications = publicLayers
@@ -29,6 +31,12 @@ export async function createSummary({
           )
         ? "failed"
         : "passed";
+  const diagnostics = await createDiagnostics({
+    layers,
+    errors,
+    repoRoot,
+    runDirRel,
+  });
   const summary = {
     schemaVersion: 1,
     runId,
@@ -40,6 +48,7 @@ export async function createSummary({
     status,
     counts: aggregateCounts(publicLayers),
     recommendedNextAction: selectRecommendedAction(classifications),
+    diagnostics,
     layers: publicLayers,
     errors,
   };

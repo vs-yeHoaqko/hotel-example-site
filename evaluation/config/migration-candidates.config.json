@@ -44,10 +44,12 @@
       "behaviorSummary": "Blank required fields show browser validation feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until direct integration coverage exists.",
-      "recommendation": "Add integration coverage for blank required-field feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-under-date-lower-bound-message",
@@ -58,10 +60,12 @@
       "behaviorSummary": "Today is rejected as a check-in date and shows localized feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until date lower-bound integration coverage exists.",
-      "recommendation": "Add integration coverage for check-in lower-bound validation before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-under-term-lower-bound",
@@ -88,10 +92,12 @@
       "behaviorSummary": "A guest count below the minimum is rejected.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until guest lower-bound integration coverage exists.",
-      "recommendation": "Add integration coverage for guest lower-bound validation before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-over-date-upper-bound-message",
@@ -102,10 +108,12 @@
       "behaviorSummary": "A check-in date beyond three months is rejected and shows localized feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until date upper-bound integration coverage exists.",
-      "recommendation": "Add integration coverage for check-in upper-bound validation before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-over-term-upper-bound",
@@ -116,10 +124,12 @@
       "behaviorSummary": "A stay term above the maximum is rejected.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until stay upper-bound integration coverage exists.",
-      "recommendation": "Add integration coverage for stay upper-bound validation before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-over-head-count-upper-bound",
@@ -146,10 +156,12 @@
       "behaviorSummary": "An invalid date string shows date validation feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until invalid date string integration coverage exists.",
-      "recommendation": "Add integration coverage for invalid date string feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-submit-mail-feedback",
@@ -160,10 +172,12 @@
       "behaviorSummary": "Submitting with mail contact selected shows name and email required feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until submit-time email feedback integration coverage exists.",
-      "recommendation": "Add integration coverage for mail-contact submit feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-submit-tel-feedback",
@@ -174,10 +188,12 @@
       "behaviorSummary": "Submitting with tel contact selected shows name and tel required feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until submit-time tel feedback integration coverage exists.",
-      "recommendation": "Add integration coverage for tel-contact submit feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "en-completion-initial-total-bill",
@@ -276,10 +292,12 @@
       "behaviorSummary": "Localized blank required fields show browser validation feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until direct integration coverage exists.",
-      "recommendation": "Add integration coverage for Japanese blank required-field feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-under-date-lower-bound-message",
@@ -290,10 +308,12 @@
       "behaviorSummary": "Today is rejected as a localized check-in date and shows localized feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese date lower-bound integration coverage exists.",
-      "recommendation": "Add integration coverage for Japanese check-in lower-bound validation before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-under-term-lower-bound-message",
@@ -304,10 +324,12 @@
       "behaviorSummary": "A localized stay term below the minimum shows locale-specific feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese term lower-bound message coverage exists.",
-      "recommendation": "Add locale-specific integration coverage before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-under-head-count-lower-bound-message",
@@ -318,10 +340,12 @@
       "behaviorSummary": "A localized guest count below the minimum shows locale-specific feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese guest lower-bound message coverage exists.",
-      "recommendation": "Add locale-specific integration coverage before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-over-date-upper-bound-message",
@@ -332,10 +356,12 @@
       "behaviorSummary": "A localized check-in date beyond three months shows locale-specific feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese date upper-bound integration coverage exists.",
-      "recommendation": "Add integration coverage for Japanese check-in upper-bound validation before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-over-term-upper-bound-message",
@@ -346,10 +372,12 @@
       "behaviorSummary": "A localized stay term above the maximum shows locale-specific feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese term upper-bound message coverage exists.",
-      "recommendation": "Add locale-specific integration coverage before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-over-head-count-upper-bound-message",
@@ -360,10 +388,12 @@
       "behaviorSummary": "A localized guest count above the maximum shows locale-specific feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese guest upper-bound message coverage exists.",
-      "recommendation": "Add locale-specific integration coverage before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-date-string-validation",
@@ -374,10 +404,12 @@
       "behaviorSummary": "A localized invalid date string shows date validation feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese invalid date string integration coverage exists.",
-      "recommendation": "Add integration coverage for Japanese invalid date string feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-submit-mail-feedback",
@@ -388,10 +420,12 @@
       "behaviorSummary": "Submitting with mail contact selected shows localized name and email required feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese submit-time email feedback integration coverage exists.",
-      "recommendation": "Add integration coverage for Japanese mail-contact submit feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-submit-tel-feedback",
@@ -402,10 +436,12 @@
       "behaviorSummary": "Submitting with tel contact selected shows localized name and tel required feedback.",
       "currentLayer": "e2e",
       "proposedOwnerLayer": "integration",
-      "status": "blocked_missing_lower_layer",
-      "lowerLayerEvidence": [],
-      "remainingE2ECoverage": "Keep this E2E detail until Japanese submit-time tel feedback integration coverage exists.",
-      "recommendation": "Add integration coverage for Japanese tel-contact submit feedback before thinning this E2E assertion."
+      "status": "ready_to_thin",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "recommendation": "Review this candidate for E2E thinning now that direct integration coverage exists."
     },
     {
       "candidateId": "ja-completion-initial-total-bill",

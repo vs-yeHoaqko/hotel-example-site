@@ -19,4 +19,9 @@ Expected result:
 - layer status `failed`
 - classification `test`
 - recommended next action `inspect_test`
+- `summary.json` includes a `diagnostics` array with a `layer_command`
+  diagnostic for the failed layer
+- passed runs include `diagnostics: []`
+- `summary.md` includes a concise failure diagnostics section with artifact
+  references instead of embedding full logs
 - logs and summaries written under the generated run directory

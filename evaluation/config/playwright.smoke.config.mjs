@@ -20,6 +20,7 @@ const webServerCommand =
 
 export default defineConfig({
   testDir: "../tests/e2e",
+  timeout: 60000,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

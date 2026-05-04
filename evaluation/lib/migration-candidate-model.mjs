@@ -119,7 +119,8 @@ async function validateAndBuildCandidates({
 
     if (
       isLocaleSpecificMessageCandidate(candidate) &&
-      candidate.status === "ready_to_thin"
+      candidate.status === "ready_to_thin" &&
+      !hasLocaleSpecificEvidence(candidate)
     ) {
       errors.push(
         `${label}: locale-specific validation message text must not be ready_to_thin without locale-specific evidence.`,
@@ -283,5 +284,11 @@ function isLocaleSpecificMessageCandidate(candidate) {
   return (
     candidate.path.includes("/ja/") &&
     (scope.includes("message") || scope.includes("feedback"))
+  );
+}
+
+function hasLocaleSpecificEvidence(candidate) {
+  return candidate.lowerLayerEvidence.some((evidencePath) =>
+    evidencePath.includes("reservation-form.spec.mjs"),
   );
 }

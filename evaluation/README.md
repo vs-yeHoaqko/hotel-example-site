@@ -33,6 +33,35 @@ Run the default gate:
 node evaluation/bin/run-evaluation.mjs --mode gate
 ```
 
+## CI Usage
+
+The fork has a dedicated `Evaluation Gate` workflow in
+`.github/workflows/evaluation.yml`.
+
+Automatic runs:
+
+- pull requests targeting the fork's `main` branch run `gate` against the local
+  site
+- pushes to the fork's `main` branch run `gate` against the local site
+
+Manual runs:
+
+- `gate`: default CI-equivalent evaluation
+- `full`: includes the full E2E layer
+- `collect-all`: collects as much evidence as possible after failures
+- `target=local`: records local target metadata and uses the local dev server
+- `target=deployed`: records deployed target metadata and evaluates the deployed
+  site
+
+The workflow is intentionally fork-scoped. The evaluation job runs only when
+`github.repository` is `vs-yeHoaqko/hotel-example-site`; it is skipped in other
+repositories. The local `upstream` remote should keep its push URL disabled so
+sync operations cannot accidentally push to the original repository.
+
+Each CI run attempts to upload `evaluation/runs/**` as an artifact, even when
+the evaluation command fails. Use the uploaded `summary.md`, `summary.json`,
+logs, screenshots, videos, and traces as the starting point for diagnosis.
+
 Run all configured layers, including the existing full E2E suite:
 
 ```sh
@@ -125,6 +154,23 @@ The implementation has been verified with:
 - controlled failing fixture: failed as expected with `classification: "test"`
 - deployed target metadata: `target: "deployed"` recorded when
   `USE_DEPLOYED_SITE=true`
+
+## Operational Notes
+
+- The `static` layer uses Prettier as a formatting gate, not as a semantic
+  static analyzer. It checks committed evaluation harness files only. `AGENTS.md`
+  and constitution files are not part of the default gate unless the config is
+  intentionally expanded.
+- `evaluation/runs/` contains generated evidence. It is ignored by Git and
+  excluded from Prettier so local runs do not make formatting checks fail.
+- On constrained sandboxes, Node's default test-runner isolation can fail with
+  `spawn EPERM`. The canonical local/CI command remains `node --test ...`; for
+  sandbox-only diagnosis, run the same files with `--test-isolation=none`.
+- The smoke reservation completion journey is the timeout-prone gate test
+  because it covers page navigation, popup handling, confirmation, modal
+  success, and window close. The smoke Playwright config uses a 60 second
+  per-test timeout to reduce false failures while keeping the layer timeout
+  bounded.
 
 ## Boundaries
 

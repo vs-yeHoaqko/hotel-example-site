@@ -1,0 +1,7 @@
+.gitattributes text eol=lf
+.github/workflows/** text eol=lf
+.agents/skills/** text eol=lf
+.specify/** text eol=lf
+AGENTS.md text eol=lf
+.prettierignore text eol=lf
+evaluation/** text eol=lf

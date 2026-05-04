@@ -1,0 +1,80 @@
+name: Evaluation Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Evaluation mode"
+        required: true
+        default: gate
+        type: choice
+        options:
+          - gate
+          - full
+          - collect-all
+      target:
+        description: "Evaluation target metadata"
+        required: true
+        default: local
+        type: choice
+        options:
+          - local
+          - deployed
+
+permissions:
+  contents: read
+
+jobs:
+  evaluation:
+    if: ${{ github.repository == 'vs-yeHoaqko/hotel-example-site' }}
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup pnpm
+        uses: pnpm/action-setup@26f6d4f2c533a43e6b5da0b4a5dd983f98f7b49a # v6.0.4
+        with:
+          version: 11
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: "package.json"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm ci
+      - name: Select evaluation mode
+        id: evaluation
+        shell: bash
+        run: |
+          mode="gate"
+          target="local"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            mode="${{ inputs.mode }}"
+            target="${{ inputs.target }}"
+          fi
+          use_deployed_site="false"
+          if [ "$target" = "deployed" ]; then
+            use_deployed_site="true"
+          fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "target=$target" >> "$GITHUB_OUTPUT"
+          echo "use_deployed_site=$use_deployed_site" >> "$GITHUB_OUTPUT"
+      - name: Run evaluation harness
+        env:
+          USE_DEPLOYED_SITE: ${{ steps.evaluation.outputs.use_deployed_site }}
+        run: node evaluation/bin/run-evaluation.mjs --mode "${{ steps.evaluation.outputs.mode }}"
+      - name: Upload evaluation evidence
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: evaluation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evaluation/runs/**
+          if-no-files-found: warn
+          retention-days: 14

@@ -31,6 +31,142 @@
     "code": "inspect_product",
     "message": "Inspect the product behavior covered by the failing layer."
   },
+  "diagnostics": [
+    {
+      "id": "integration-001",
+      "type": "test_case",
+      "layer": "integration",
+      "ownerLayer": "integration",
+      "classification": "product",
+      "title": "reservation form > shows validation message when name is missing",
+      "source": {
+        "path": "evaluation/tests/integration/reservation-form.spec.mjs",
+        "line": 42
+      },
+      "message": "Error: expect(locator).toHaveText(expected)",
+      "excerpt": "Error: expect(locator).toHaveText(expected)\n    at reservation-form.spec.mjs:42:10",
+      "expected": "Please fill out this field.",
+      "actual": "",
+      "reproduction": {
+        "level": "test",
+        "display": "node node_modules/@playwright/test/cli.js test --config evaluation/config/playwright.integration.config.mjs evaluation/tests/integration/reservation-form.spec.mjs -g \"shows validation message when name is missing\""
+      },
+      "artifacts": [
+        {
+          "path": "artifacts/integration-results.json",
+          "kind": "playwright_json",
+          "label": "Playwright JSON result"
+        },
+        {
+          "path": "artifacts/name-missing.png",
+          "kind": "screenshot",
+          "label": "name-missing.png"
+        },
+        {
+          "path": "artifacts/trace.zip",
+          "kind": "trace",
+          "label": "trace.zip"
+        }
+      ],
+      "guidance": {
+        "action": "inspect_product",
+        "confidence": "high",
+        "rationale": "Reservation validation evidence maps to reservation UI behavior, validation helpers, and locale message data.",
+        "likelyTargets": [
+          {
+            "kind": "product_file",
+            "path": "src/reserve.js",
+            "label": "Reservation UI behavior",
+            "rationale": "Reservation form state and validation feedback are coordinated in the reservation page script."
+          },
+          {
+            "kind": "product_file",
+            "path": "src/lib/validation.js",
+            "label": "Validation helper",
+            "rationale": "Boundary and required-field checks should be inspected in the shared validation helper."
+          }
+        ]
+      }
+    },
+    {
+      "id": "integration-002",
+      "type": "layer_command",
+      "layer": "integration",
+      "ownerLayer": "integration",
+      "classification": "product",
+      "title": "integration layer failed",
+      "source": null,
+      "message": "integration exited with code 1.",
+      "excerpt": "Error: expect(locator).toHaveText(expected)",
+      "expected": null,
+      "actual": null,
+      "reproduction": {
+        "level": "layer",
+        "display": "node node_modules/@playwright/test/cli.js test --config evaluation/config/playwright.integration.config.mjs"
+      },
+      "artifacts": [
+        {
+          "path": "logs/integration.stdout.log",
+          "kind": "stdout",
+          "label": "stdout log"
+        },
+        {
+          "path": "logs/integration.stderr.log",
+          "kind": "stderr",
+          "label": "stderr log"
+        },
+        {
+          "path": "artifacts/integration-results.json",
+          "kind": "playwright_json",
+          "label": "Playwright JSON result"
+        }
+      ],
+      "guidance": {
+        "action": "inspect_product",
+        "confidence": "high",
+        "rationale": "Reservation validation evidence maps to reservation UI behavior, validation helpers, and locale message data.",
+        "likelyTargets": [
+          {
+            "kind": "product_file",
+            "path": "src/reserve.js",
+            "label": "Reservation UI behavior",
+            "rationale": "Reservation form state and validation feedback are coordinated in the reservation page script."
+          }
+        ]
+      }
+    },
+    {
+      "id": "runner-001",
+      "type": "runner_error",
+      "layer": "gate",
+      "ownerLayer": "gate",
+      "classification": "test",
+      "title": "Evaluation runner error",
+      "source": null,
+      "message": "Example error shape for internal runner failures.",
+      "excerpt": "Example error shape for internal runner failures.",
+      "expected": null,
+      "actual": null,
+      "reproduction": {
+        "level": "layer",
+        "display": "node evaluation/bin/run-evaluation.mjs --mode gate"
+      },
+      "artifacts": [],
+      "guidance": {
+        "action": "inspect_test",
+        "confidence": "medium",
+        "rationale": "The failure classification points to evaluation code, fixture, or command configuration.",
+        "likelyTargets": [
+          {
+            "kind": "evaluation_file",
+            "path": null,
+            "label": "Evaluation test or fixture",
+            "rationale": "Test-classified diagnostics should be inspected in the evaluation artifact that produced the failure."
+          }
+        ]
+      }
+    }
+  ],
   "layers": [
     {
       "name": "static",
