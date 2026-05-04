@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "runsDirectory": "evaluation/runs",
+  "reportPath": "evaluation/reports/run-health.md",
+  "maxRuns": 5,
+  "topSlowTests": 10,
+  "layerThresholdsMs": {
+    "static": 5000,
+    "unit": 5000,
+    "integration": 40000,
+    "smoke-e2e": 30000,
+    "full-e2e": 45000
+  },
+  "testSlowThresholdMs": 3000
+}

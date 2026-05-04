@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 1,
+  "scope": "reservation-billing",
+  "sourceCandidates": "evaluation/config/migration-candidates.config.json",
+  "decisions": [
+    {
+      "candidateId": "en-blank-required-validation",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "blank required-field feedback for date, stay, and guests",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-completion-initial-journey",
+      "outcome": "keep_e2e",
+      "reason": "Representative browser journey remains in root E2E while lower-layer-owned detail assertions are thinned.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "not-logged-in reservation popup, confirmation, modal, and close journey",
+      "ownerLayer": "e2e",
+      "lowerLayerEvidence": ["evaluation/tests/e2e/smoke.spec.mjs"],
+      "remainingE2ECoverage": "Keep this as representative completion smoke coverage.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-completion-initial-total-bill",
+      "outcome": "thinned",
+      "reason": "Total bill calculation is covered by unit evidence; root E2E keeps the browser completion journey.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "#total-bill assertion in initial not-logged-in completion journey",
+      "ownerLayer": "unit",
+      "lowerLayerEvidence": ["evaluation/tests/unit/billing.test.mjs"],
+      "remainingE2ECoverage": "Keep one reservation completion smoke journey.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-completion-logged-journey",
+      "outcome": "keep_e2e",
+      "reason": "Representative browser journey remains in root E2E while lower-layer-owned detail assertions are thinned.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "logged-in reservation popup, confirmation, modal, and close journey",
+      "ownerLayer": "e2e",
+      "lowerLayerEvidence": ["evaluation/tests/e2e/smoke.spec.mjs"],
+      "remainingE2ECoverage": "Keep this as representative logged-in completion smoke coverage.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-completion-logged-total-bill",
+      "outcome": "thinned",
+      "reason": "Total bill calculation is covered by unit evidence; root E2E keeps the browser completion journey.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "#total-bill assertion in logged-in completion journey",
+      "ownerLayer": "unit",
+      "lowerLayerEvidence": ["evaluation/tests/unit/billing.test.mjs"],
+      "remainingE2ECoverage": "Keep one logged-in reservation completion smoke journey.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-date-string-validation",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "invalid date string feedback",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-initial-logged-contact-visibility",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "contact email/tel field visibility in logged-in initial state",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep a thin logged-in reservation journey for session storage and popup behavior.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-initial-not-logged-contact-visibility",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "contact email/tel field visibility in not-logged-in initial state",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep localized reservation opening and representative completion journey smoke coverage.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-over-date-upper-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "check-in upper-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-over-head-count-upper-bound",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "guest count upper-bound validation",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage; integration owns the page-local invalid total behavior.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-over-term-upper-bound",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "stay term upper-bound validation",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-submit-mail-feedback",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "submit-time name and email feedback",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-submit-tel-feedback",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "submit-time name and tel feedback",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-under-date-lower-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "check-in lower-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-under-head-count-lower-bound",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "guest count lower-bound validation",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "en-under-term-lower-bound",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/en-US/reserve.spec.ts",
+      "assertionScope": "stay term lower-bound validation",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage; integration owns the page-local invalid total behavior.",
+      "outsideFiles": ["e2e/en-US/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-blank-required-validation",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese blank required-field feedback for date, stay, and guests",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-completion-initial-journey",
+      "outcome": "keep_e2e",
+      "reason": "Representative browser journey remains in root E2E while lower-layer-owned detail assertions are thinned.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese not-logged-in reservation popup, confirmation, modal, and close journey",
+      "ownerLayer": "e2e",
+      "lowerLayerEvidence": ["evaluation/tests/e2e/smoke.spec.mjs"],
+      "remainingE2ECoverage": "Keep this as representative localized completion smoke coverage.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-completion-initial-total-bill",
+      "outcome": "thinned",
+      "reason": "Total bill calculation is covered by unit evidence; root E2E keeps the browser completion journey.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "#total-bill assertion in Japanese not-logged-in completion journey",
+      "ownerLayer": "unit",
+      "lowerLayerEvidence": ["evaluation/tests/unit/billing.test.mjs"],
+      "remainingE2ECoverage": "Keep one localized reservation completion smoke journey.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-completion-logged-journey",
+      "outcome": "keep_e2e",
+      "reason": "Representative browser journey remains in root E2E while lower-layer-owned detail assertions are thinned.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese logged-in reservation popup, confirmation, modal, and close journey",
+      "ownerLayer": "e2e",
+      "lowerLayerEvidence": ["evaluation/tests/e2e/smoke.spec.mjs"],
+      "remainingE2ECoverage": "Keep this as representative localized logged-in completion smoke coverage.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-completion-logged-total-bill",
+      "outcome": "thinned",
+      "reason": "Total bill calculation is covered by unit evidence; root E2E keeps the browser completion journey.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "#total-bill assertion in Japanese logged-in completion journey",
+      "ownerLayer": "unit",
+      "lowerLayerEvidence": ["evaluation/tests/unit/billing.test.mjs"],
+      "remainingE2ECoverage": "Keep one localized logged-in reservation completion smoke journey.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-date-string-validation",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese invalid date string feedback",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-initial-logged-contact-visibility",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "contact email/tel field visibility in Japanese logged-in initial state",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep a thin localized logged-in reservation journey for session storage and popup behavior.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-initial-not-logged-contact-visibility",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "contact email/tel field visibility in Japanese not-logged-in initial state",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep localized reservation opening and representative completion journey smoke coverage.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-over-date-upper-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese check-in upper-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-over-head-count-upper-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese guest count upper-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-over-term-upper-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese stay term upper-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-submit-mail-feedback",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese submit-time name and email feedback",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-submit-tel-feedback",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese submit-time name and tel feedback",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-under-date-lower-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese check-in lower-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-under-head-count-lower-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese guest count lower-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    },
+    {
+      "candidateId": "ja-under-term-lower-bound-message",
+      "outcome": "thinned",
+      "reason": "Page-local reservation form behavior is covered by integration evidence; root E2E keeps navigation and representative journey coverage.",
+      "rootE2EPath": "e2e/ja/reserve.spec.ts",
+      "assertionScope": "Japanese stay term lower-bound validation message",
+      "ownerLayer": "integration",
+      "lowerLayerEvidence": [
+        "evaluation/tests/integration/reservation-form.spec.mjs"
+      ],
+      "remainingE2ECoverage": "Keep representative reservation completion coverage until E2E thinning is reviewed and approved.",
+      "outsideFiles": ["e2e/ja/reserve.spec.ts"],
+      "conflictRisk": "medium",
+      "notes": []
+    }
+  ]
+}

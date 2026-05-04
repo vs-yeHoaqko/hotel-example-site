@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/005-evaluation-ci/plan.md`
+`evaluation/specs/007-slow-flaky-evidence/plan.md`
 
 <!-- SPECKIT END -->
 

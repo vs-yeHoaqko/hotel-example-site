@@ -7,7 +7,14 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: The examples below include test tasks. For evaluation harness work,
+include validation or evidence tasks unless the feature specification explains
+why no testable behavior changes are made. For other work, include tests when
+requested by the feature specification.
+
+**Fork drift**: Tasks that touch files outside `evaluation/` must name the
+specific files, avoid unrelated formatting or restructuring, and include a
+validation step against the latest fork `main`.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

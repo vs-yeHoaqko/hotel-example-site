@@ -2,6 +2,11 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { createE2EInventory } from "./e2e-inventory.mjs";
 import { createOwnership } from "./ownership.mjs";
+import {
+  attachThinningDecisions,
+  countThinningOutcomes,
+  loadThinningDecisionSet,
+} from "./thinning-decision-model.mjs";
 
 export const STATUS_ORDER = [
   "ready_to_thin",
@@ -15,6 +20,7 @@ const VALID_LAYERS = new Set(["unit", "integration", "e2e"]);
 export async function createMigrationCandidateModel({
   repoRoot = process.cwd(),
   configPath = "evaluation/config/migration-candidates.config.json",
+  decisionConfigPath = "evaluation/config/thinning-decisions.config.json",
 } = {}) {
   const config = await loadMigrationCandidateConfig(configPath, { repoRoot });
   const ownership = await createOwnership({ repoRoot });
@@ -27,18 +33,34 @@ export async function createMigrationCandidateModel({
     repoRoot,
   });
 
-  const sortedCandidates = candidates.toSorted(compareCandidates);
+  const thinningDecisionSet = await loadThinningDecisionSet(
+    decisionConfigPath,
+    {
+      repoRoot,
+      candidates,
+    },
+  );
+  const candidatesWithDecisions = attachThinningDecisions(
+    candidates,
+    thinningDecisionSet,
+  );
+  const sortedCandidates = candidatesWithDecisions.toSorted(compareCandidates);
   const groups = groupCandidates(sortedCandidates);
 
   return {
     metadata: {
       command: "node evaluation/bin/generate-migration-candidates.mjs",
       scope: config.scope,
+      sourceCandidates: configPath,
+      thinningDecisionSource: decisionConfigPath,
       ownershipSource: "evaluation/lib/ownership.mjs",
       inventorySource: "e2e/**/*.spec.ts",
       reportPath: "evaluation/reports/migration-candidates.md",
     },
     counts: countByStatus(sortedCandidates),
+    thinningDecisionCounts: countThinningOutcomes(
+      thinningDecisionSet.decisions,
+    ),
     groups,
     inventoryWarnings: warnings,
     candidates: sortedCandidates,

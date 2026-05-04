@@ -1,7 +1,7 @@
 # Implementation Plan: [FEATURE]
 
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**Input**: Feature specification from the active Spec Kit feature directory recorded in `.specify/feature.json`
 
 **Note**: This template is filled in by the `/speckit-plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
@@ -31,7 +31,19 @@
 
 _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-[Gates determined based on constitution file]
+- Evaluation assets and generated evidence stay under `evaluation/` unless the
+  feature explicitly documents outside-file edits.
+- Any outside-file edit states rationale, expected blast radius, and rollback
+  path before implementation.
+- Changes identify affected test layers and the evidence that proves
+  completion.
+- E2E thinning work names the migration candidates, lower-layer evidence,
+  remaining E2E smoke coverage, and validation runs.
+- Fork drift is minimized: outside-`evaluation/` edits are limited to the
+  smallest necessary change, avoid unrelated formatting, and document conflict
+  risk.
+- Repair behavior remains non-mutating unless a later approved specification
+  introduces auditable repair mode.
 
 ## Project Structure
 
