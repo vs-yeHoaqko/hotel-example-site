@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/004-failure-diagnostics-repair-guidance/plan.md`
+`evaluation/specs/005-evaluation-ci/plan.md`
 
 <!-- SPECKIT END -->
 

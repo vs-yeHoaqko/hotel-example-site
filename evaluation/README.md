@@ -33,6 +33,35 @@ Run the default gate:
 node evaluation/bin/run-evaluation.mjs --mode gate
 ```
 
+## CI Usage
+
+The fork has a dedicated `Evaluation Gate` workflow in
+`.github/workflows/evaluation.yml`.
+
+Automatic runs:
+
+- pull requests targeting the fork's `main` branch run `gate` against the local
+  site
+- pushes to the fork's `main` branch run `gate` against the local site
+
+Manual runs:
+
+- `gate`: default CI-equivalent evaluation
+- `full`: includes the full E2E layer
+- `collect-all`: collects as much evidence as possible after failures
+- `target=local`: records local target metadata and uses the local dev server
+- `target=deployed`: records deployed target metadata and evaluates the deployed
+  site
+
+The workflow is intentionally fork-scoped. The evaluation job runs only when
+`github.repository` is `vs-yeHoaqko/hotel-example-site`; it is skipped in other
+repositories. The local `upstream` remote should keep its push URL disabled so
+sync operations cannot accidentally push to the original repository.
+
+Each CI run attempts to upload `evaluation/runs/**` as an artifact, even when
+the evaluation command fails. Use the uploaded `summary.md`, `summary.json`,
+logs, screenshots, videos, and traces as the starting point for diagnosis.
+
 Run all configured layers, including the existing full E2E suite:
 
 ```sh
