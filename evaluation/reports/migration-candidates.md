@@ -10,8 +10,8 @@
 
 ## Status Counts
 
-- `ready_to_thin`: 10
-- `blocked_missing_lower_layer`: 18
+- `ready_to_thin`: 28
+- `blocked_missing_lower_layer`: 0
 - `keep_e2e`: 4
 
 ## Candidates By Behavior
@@ -100,39 +100,39 @@
 
 #### `en-blank-required-validation`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:138 (ordinal 2)`
 - Source title: `It should be an error when blank values`
 - Assertion scope: blank required-field feedback for date, stay, and guests
 - Behavior summary: Blank required fields show browser validation feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until direct integration coverage exists.
-- Recommendation: Add integration coverage for blank required-field feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `en-under-date-lower-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:179 (ordinal 3)`
 - Source title: `It should be an error when invalid values [under]`
 - Assertion scope: check-in lower-bound validation message
 - Behavior summary: Today is rejected as a check-in date and shows localized feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until date lower-bound integration coverage exists.
-- Recommendation: Add integration coverage for check-in lower-bound validation before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `en-under-head-count-lower-bound`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:179 (ordinal 3)`
 - Source title: `It should be an error when invalid values [under]`
 - Assertion scope: guest count lower-bound validation
 - Behavior summary: A guest count below the minimum is rejected.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until guest lower-bound integration coverage exists.
-- Recommendation: Add integration coverage for guest lower-bound validation before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `en-under-term-lower-bound`
 
@@ -148,15 +148,15 @@
 
 #### `en-over-date-upper-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:224 (ordinal 4)`
 - Source title: `It should be an error when invalid values [over]`
 - Assertion scope: check-in upper-bound validation message
 - Behavior summary: A check-in date beyond three months is rejected and shows localized feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until date upper-bound integration coverage exists.
-- Recommendation: Add integration coverage for check-in upper-bound validation before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `en-over-head-count-upper-bound`
 
@@ -172,51 +172,51 @@
 
 #### `en-over-term-upper-bound`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:224 (ordinal 4)`
 - Source title: `It should be an error when invalid values [over]`
 - Assertion scope: stay term upper-bound validation
 - Behavior summary: A stay term above the maximum is rejected.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until stay upper-bound integration coverage exists.
-- Recommendation: Add integration coverage for stay upper-bound validation before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `en-date-string-validation`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:270 (ordinal 5)`
 - Source title: `It should be an error when invalid values [string]`
 - Assertion scope: invalid date string feedback
 - Behavior summary: An invalid date string shows date validation feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until invalid date string integration coverage exists.
-- Recommendation: Add integration coverage for invalid date string feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `en-submit-mail-feedback`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:307 (ordinal 6)`
 - Source title: `It should be an error when submitting [mail]`
 - Assertion scope: submit-time name and email feedback
 - Behavior summary: Submitting with mail contact selected shows name and email required feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until submit-time email feedback integration coverage exists.
-- Recommendation: Add integration coverage for mail-contact submit feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `en-submit-tel-feedback`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/en-US/reserve.spec.ts:349 (ordinal 7)`
 - Source title: `It should be an error when submitting [tel]`
 - Assertion scope: submit-time name and tel feedback
 - Behavior summary: Submitting with tel contact selected shows name and tel required feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until submit-time tel feedback integration coverage exists.
-- Recommendation: Add integration coverage for tel-contact submit feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-initial-not-logged-contact-visibility`
 
@@ -244,123 +244,123 @@
 
 #### `ja-blank-required-validation`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:131 (ordinal 2)`
 - Source title: `入力値が空白でエラーとなること`
 - Assertion scope: Japanese blank required-field feedback for date, stay, and guests
 - Behavior summary: Localized blank required fields show browser validation feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until direct integration coverage exists.
-- Recommendation: Add integration coverage for Japanese blank required-field feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-under-date-lower-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:172 (ordinal 3)`
 - Source title: `不正な入力値でエラーとなること_小`
 - Assertion scope: Japanese check-in lower-bound validation message
 - Behavior summary: Today is rejected as a localized check-in date and shows localized feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese date lower-bound integration coverage exists.
-- Recommendation: Add integration coverage for Japanese check-in lower-bound validation before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-under-head-count-lower-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:172 (ordinal 3)`
 - Source title: `不正な入力値でエラーとなること_小`
 - Assertion scope: Japanese guest count lower-bound validation message
 - Behavior summary: A localized guest count below the minimum shows locale-specific feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese guest lower-bound message coverage exists.
-- Recommendation: Add locale-specific integration coverage before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-under-term-lower-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:172 (ordinal 3)`
 - Source title: `不正な入力値でエラーとなること_小`
 - Assertion scope: Japanese stay term lower-bound validation message
 - Behavior summary: A localized stay term below the minimum shows locale-specific feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese term lower-bound message coverage exists.
-- Recommendation: Add locale-specific integration coverage before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-over-date-upper-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:215 (ordinal 4)`
 - Source title: `不正な入力値でエラーとなること_大`
 - Assertion scope: Japanese check-in upper-bound validation message
 - Behavior summary: A localized check-in date beyond three months shows locale-specific feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese date upper-bound integration coverage exists.
-- Recommendation: Add integration coverage for Japanese check-in upper-bound validation before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-over-head-count-upper-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:215 (ordinal 4)`
 - Source title: `不正な入力値でエラーとなること_大`
 - Assertion scope: Japanese guest count upper-bound validation message
 - Behavior summary: A localized guest count above the maximum shows locale-specific feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese guest upper-bound message coverage exists.
-- Recommendation: Add locale-specific integration coverage before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-over-term-upper-bound-message`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:215 (ordinal 4)`
 - Source title: `不正な入力値でエラーとなること_大`
 - Assertion scope: Japanese stay term upper-bound validation message
 - Behavior summary: A localized stay term above the maximum shows locale-specific feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese term upper-bound message coverage exists.
-- Recommendation: Add locale-specific integration coverage before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-date-string-validation`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:259 (ordinal 5)`
 - Source title: `不正な入力値でエラーとなること_文字列`
 - Assertion scope: Japanese invalid date string feedback
 - Behavior summary: A localized invalid date string shows date validation feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese invalid date string integration coverage exists.
-- Recommendation: Add integration coverage for Japanese invalid date string feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-submit-mail-feedback`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:295 (ordinal 6)`
 - Source title: `不正な入力値でエラーとなること_確定時_メール選択`
 - Assertion scope: Japanese submit-time name and email feedback
 - Behavior summary: Submitting with mail contact selected shows localized name and email required feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese submit-time email feedback integration coverage exists.
-- Recommendation: Add integration coverage for Japanese mail-contact submit feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 #### `ja-submit-tel-feedback`
 
-- Status: `blocked_missing_lower_layer`
+- Status: `ready_to_thin`
 - Root E2E: `e2e/ja/reserve.spec.ts:337 (ordinal 7)`
 - Source title: `不正な入力値でエラーとなること_確定時_電話選択`
 - Assertion scope: Japanese submit-time name and tel feedback
 - Behavior summary: Submitting with tel contact selected shows localized name and tel required feedback.
 - Layers: `e2e` -> `integration`
-- Lower-layer evidence: None yet; this candidate is blocked until direct lower-layer evidence exists.
-- Remaining E2E coverage: Keep this E2E detail until Japanese submit-time tel feedback integration coverage exists.
-- Recommendation: Add integration coverage for Japanese tel-contact submit feedback before thinning this E2E assertion.
+- Lower-layer evidence: `evaluation/tests/integration/reservation-form.spec.mjs`
+- Remaining E2E coverage: Keep representative reservation completion coverage until E2E thinning is reviewed and approved.
+- Recommendation: Review this candidate for E2E thinning now that direct integration coverage exists.
 
 ### Total bill calculation
 
