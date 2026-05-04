@@ -29,6 +29,9 @@ export function renderRunHealthReport(model) {
   }
 
   renderSelectedRuns(lines, model.selectedRuns);
+  renderEvidence(lines, "Preflight Evidence", model.preflightEvidence ?? [], {
+    empty: "No preflight evidence found in selected runs.",
+  });
   renderSlowLayers(lines, model.slowLayers);
   renderSlowTests(lines, model);
   renderEvidence(lines, "Instability Evidence", model.instabilityEvidence, {
@@ -37,7 +40,9 @@ export function renderRunHealthReport(model) {
       : "None",
   });
   renderEvidence(lines, "Environment Evidence", model.environmentEvidence, {
-    empty: "None",
+    empty: model.noEnvironmentEvidenceObserved
+      ? "No environment evidence observed in selected runs."
+      : "None",
   });
   renderWarnings(lines, model.warnings);
   renderRecommendedReviewFocus(lines, model.recommendedReviewFocus);
@@ -159,7 +164,7 @@ function renderEvidence(lines, title, evidence, { empty }) {
         escapeTable(item.kind),
         escapeTable(item.title),
         escapeTable(item.status),
-        escapeTable(item.classification),
+        escapeTable(item.classification ?? "-"),
         formatDuration(item.durationMs),
         code(item.artifactPath),
         escapeTable(item.messages.join("; ") || "-"),

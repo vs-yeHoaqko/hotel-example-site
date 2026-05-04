@@ -28,13 +28,17 @@ export async function createRunHealthModel({
   const slowLayers = layerHealth
     .filter((layer) => layer.slow)
     .sort(compareSlowLayers);
-  const { slowTests, instabilityEvidence, environmentEvidence } =
-    await readPlaywrightEvidence({
-      repoRoot,
-      config,
-      selectedRuns,
-      warnings,
-    });
+  const {
+    slowTests,
+    instabilityEvidence,
+    environmentEvidence,
+    preflightEvidence,
+  } = await readPlaywrightEvidence({
+    repoRoot,
+    config,
+    selectedRuns,
+    warnings,
+  });
 
   addLayerInstabilityEvidence({
     selectedRuns,
@@ -45,6 +49,7 @@ export async function createRunHealthModel({
   slowTests.sort(compareTestFindings);
   instabilityEvidence.sort(compareEvidence);
   environmentEvidence.sort(compareEvidence);
+  preflightEvidence.sort(compareEvidence);
 
   const truncatedSlowTests = slowTests.slice(0, config.topSlowTests);
 
@@ -65,9 +70,11 @@ export async function createRunHealthModel({
     slowLayers,
     slowTests: truncatedSlowTests,
     slowTestObservationCount: slowTests.length,
+    preflightEvidence,
     instabilityEvidence,
     environmentEvidence,
     noFlakyEvidenceObserved: instabilityEvidence.length === 0,
+    noEnvironmentEvidenceObserved: environmentEvidence.length === 0,
     warnings,
     recommendedReviewFocus: createRecommendedReviewFocus({
       slowLayers,
@@ -145,6 +152,17 @@ async function readRunSummaries({ repoRoot, config, warnings }) {
     const runDirectory = entry.name;
     const summaryPath = path.join(runsRoot, runDirectory, "summary.json");
     const relativeSummaryPath = toPosix(path.relative(repoRoot, summaryPath));
+    if (!(await fileExists(summaryPath))) {
+      const summaryMarkdownPath = path.join(
+        runsRoot,
+        runDirectory,
+        "summary.md",
+      );
+      if (await fileExists(summaryMarkdownPath)) {
+        warnings.push(`${relativeSummaryPath}: missing`);
+      }
+      continue;
+    }
     const summary = await safeReadJson(
       summaryPath,
       warnings,
@@ -202,6 +220,18 @@ async function readRunSummaries({ repoRoot, config, warnings }) {
     warnings.push(`${config.runsDirectory}: no readable run summaries found`);
   }
   return runs;
+}
+
+async function fileExists(absolutePath) {
+  try {
+    await stat(absolutePath);
+    return true;
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      return false;
+    }
+    throw error;
+  }
 }
 
 async function safeReaddir(absoluteDirectory, warnings, label) {
@@ -266,6 +296,7 @@ async function readPlaywrightEvidence({
   const slowTests = [];
   const instabilityEvidence = [];
   const environmentEvidence = [];
+  const preflightEvidence = [];
 
   for (const run of selectedRuns) {
     for (const layer of run.layers) {
@@ -288,6 +319,21 @@ async function readPlaywrightEvidence({
           warnings,
           relativeArtifactPath,
         );
+        if (artifactPath === "artifacts/environment-preflight.json") {
+          if (result) {
+            extractPreflightEvidence({
+              result,
+              run,
+              layer,
+              artifactPath: relativeArtifactPath,
+              preflightEvidence,
+              environmentEvidence,
+              warnings,
+            });
+          }
+          continue;
+        }
+
         if (!result || !Array.isArray(result.suites)) {
           if (result) {
             warnings.push(
@@ -356,7 +402,53 @@ async function readPlaywrightEvidence({
     }
   }
 
-  return { slowTests, instabilityEvidence, environmentEvidence };
+  return {
+    slowTests,
+    instabilityEvidence,
+    environmentEvidence,
+    preflightEvidence,
+  };
+}
+
+function extractPreflightEvidence({
+  result,
+  run,
+  layer,
+  artifactPath,
+  preflightEvidence,
+  environmentEvidence,
+  warnings,
+}) {
+  if (!Array.isArray(result.checks)) {
+    warnings.push(`${artifactPath}: missing or invalid preflight checks array`);
+    return;
+  }
+
+  for (const check of result.checks) {
+    const item = {
+      kind: "preflight",
+      runId: run.runId,
+      layer: layer.name,
+      title: stringOrDefault(check.label, stringOrDefault(check.id, "check")),
+      file: "",
+      status: stringOrDefault(check.status, "unknown"),
+      retry: 0,
+      durationMs: null,
+      classification: check.classification ?? null,
+      artifactPath,
+      messages: [
+        stringOrDefault(check.message, ""),
+        stringOrDefault(check.guidance, ""),
+      ].filter(Boolean),
+    };
+    preflightEvidence.push(item);
+    if (item.status === "failed" || item.classification === "environment") {
+      environmentEvidence.push({
+        ...item,
+        classification: "environment",
+      });
+    }
+  }
 }
 
 function extractPlaywrightObservations({ result, run, layer, artifactPath }) {

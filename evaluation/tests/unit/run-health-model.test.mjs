@@ -185,6 +185,98 @@ test("reports no flaky evidence when selected runs contain only expected passed 
   assert.equal(model.metadata.runsDirectory, "evaluation/runs");
 });
 
+test("extracts preflight evidence and no-environment wording state", async () => {
+  const repoRoot = await createTempRepo();
+  await writeConfig(repoRoot, { maxRuns: 1, testSlowThresholdMs: 1000 });
+  await writeSummary(repoRoot, "20260106T000000Z-e", {
+    layers: [
+      layer({
+        name: "environment",
+        durationMs: 100,
+        artifacts: ["artifacts/environment-preflight.json"],
+      }),
+    ],
+  });
+  await writeJson(
+    repoRoot,
+    "evaluation/runs/20260106T000000Z-e/artifacts/environment-preflight.json",
+    {
+      schemaVersion: 1,
+      status: "passed",
+      startedAt: "2026-01-06T00:00:00.000Z",
+      finishedAt: "2026-01-06T00:00:00.100Z",
+      durationMs: 100,
+      checks: [
+        {
+          id: "node-spawn",
+          label: "Subprocess spawn",
+          status: "passed",
+          classification: null,
+          message: "Subprocess spawn is available.",
+          guidance: "No action required.",
+          details: {},
+        },
+      ],
+    },
+  );
+
+  const model = await createRunHealthModel({ repoRoot });
+
+  assert.equal(model.preflightEvidence.length, 1);
+  assert.equal(model.environmentEvidence.length, 0);
+  assert.equal(model.noEnvironmentEvidenceObserved, true);
+  assert.equal(model.warnings.length, 0);
+});
+
+test("extracts failed preflight checks as environment evidence", async () => {
+  const repoRoot = await createTempRepo();
+  await writeConfig(repoRoot, { maxRuns: 1, testSlowThresholdMs: 1000 });
+  await writeSummary(repoRoot, "20260107T000000Z-f", {
+    status: "failed",
+    layers: [
+      layer({
+        name: "environment",
+        status: "failed",
+        classification: "environment",
+        durationMs: 100,
+        artifacts: ["artifacts/environment-preflight.json"],
+      }),
+    ],
+  });
+  await writeJson(
+    repoRoot,
+    "evaluation/runs/20260107T000000Z-f/artifacts/environment-preflight.json",
+    {
+      schemaVersion: 1,
+      status: "failed",
+      startedAt: "2026-01-07T00:00:00.000Z",
+      finishedAt: "2026-01-07T00:00:00.100Z",
+      durationMs: 100,
+      checks: [
+        {
+          id: "node-spawn",
+          label: "Subprocess spawn",
+          status: "failed",
+          classification: "environment",
+          message: "spawn EPERM",
+          guidance: "Fix local process execution permissions.",
+          details: {},
+        },
+      ],
+    },
+  );
+
+  const model = await createRunHealthModel({ repoRoot });
+
+  assert.equal(model.preflightEvidence.length, 1);
+  assert.equal(model.environmentEvidence.length, 2);
+  assert.equal(model.noEnvironmentEvidenceObserved, false);
+  assert.match(
+    model.environmentEvidence.map((item) => item.title).join("\n"),
+    /Subprocess spawn/,
+  );
+});
+
 async function createTempRepo() {
   const repoRoot = await mkdtemp(path.join(os.tmpdir(), "run-health-"));
   await mkdir(path.join(repoRoot, "evaluation/config"), { recursive: true });

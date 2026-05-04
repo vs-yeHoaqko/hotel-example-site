@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "layers": [
     {
+      "name": "environment",
+      "required": true,
+      "modes": ["gate", "full", "collect-all"],
+      "timeoutMs": 30000,
+      "command": ["node", "evaluation/bin/check-environment.mjs"],
+      "dependsOn": [],
+      "requires": ["node"],
+      "failureClassification": "environment"
+    },
+    {
       "name": "static",
       "required": true,
       "modes": ["gate", "full", "collect-all"],
@@ -35,6 +45,7 @@
         "evaluation/tests/unit/billing.test.mjs",
         "evaluation/tests/unit/thinning-decision-model.test.mjs",
         "evaluation/tests/unit/migration-candidate-report.test.mjs",
+        "evaluation/tests/unit/environment-preflight.test.mjs",
         "evaluation/tests/unit/run-health-model.test.mjs",
         "evaluation/tests/unit/run-health-report.test.mjs"
       ],

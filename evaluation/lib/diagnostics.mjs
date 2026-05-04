@@ -174,6 +174,9 @@ export function ownerLayerForLayer(layerName) {
   if (layerName === "static") {
     return OWNER_LAYERS.GATE;
   }
+  if (layerName === "environment") {
+    return OWNER_LAYERS.GATE;
+  }
   return OWNER_LAYERS.UNKNOWN;
 }
 

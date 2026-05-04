@@ -8,6 +8,7 @@ test("renders required sections, source paths, warnings, and no-flaky wording", 
   assert.match(report, /^# Run Health Report/m);
   assert.match(report, /^## Metadata/m);
   assert.match(report, /^## Selected Runs/m);
+  assert.match(report, /^## Preflight Evidence/m);
   assert.match(report, /^## Slow Layers/m);
   assert.match(report, /^## Slow Tests/m);
   assert.match(report, /^## Instability Evidence/m);
@@ -17,6 +18,7 @@ test("renders required sections, source paths, warnings, and no-flaky wording", 
   assert.match(report, /`evaluation\/runs\/run-a\/summary\.json`/);
   assert.match(report, /`artifacts\/smoke-results\.json`/);
   assert.match(report, /No flaky evidence observed in selected runs\./);
+  assert.match(report, /No environment evidence observed in selected runs\./);
   assert.match(report, /artifact missing/);
 });
 
@@ -105,9 +107,25 @@ function baseModel(overrides = {}) {
       },
     ],
     slowTestObservationCount: 1,
+    preflightEvidence: [
+      {
+        kind: "preflight",
+        runId: "run-a",
+        layer: "environment",
+        title: "Subprocess spawn",
+        file: "",
+        status: "passed",
+        retry: 0,
+        durationMs: null,
+        classification: null,
+        artifactPath: "artifacts/environment-preflight.json",
+        messages: ["Subprocess spawn is available."],
+      },
+    ],
     instabilityEvidence: [],
     environmentEvidence: [],
     noFlakyEvidenceObserved: true,
+    noEnvironmentEvidenceObserved: true,
     warnings: ["artifact missing"],
     recommendedReviewFocus: [
       "Review slow layers against configured thresholds.",

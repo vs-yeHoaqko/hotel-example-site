@@ -134,7 +134,9 @@ export function skippedLayerResult(layer, reason, classification = null) {
 
 function collectArtifacts(layerName, baseArtifacts) {
   const artifacts = [...baseArtifacts];
-  if (layerName === "integration") {
+  if (layerName === "environment") {
+    artifacts.push("artifacts/environment-preflight.json");
+  } else if (layerName === "integration") {
     artifacts.push("artifacts/integration-results.json");
   } else if (layerName === "smoke-e2e") {
     artifacts.push("artifacts/smoke-results.json");
