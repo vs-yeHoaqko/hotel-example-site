@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/005-evaluation-ci/plan.md`
+`evaluation/specs/006-e2e-thinning/plan.md`
 
 <!-- SPECKIT END -->
 

@@ -1,18 +1,17 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 -> 1.2.0
+Version change: 1.2.0 -> 1.4.0
 Modified principles:
-- III. Evidence Is a Required Output
-- V. Repair Loops Must Preserve Trust
+- IV. Tests Move Down the Pyramid When Their Responsibility Allows It
 - VI. Harness Growth Is Reviewable
 Added principles:
-- VII. Failure Diagnostics Must Be Actionable Before Repair
+- VIII. E2E Thinning Is Evidence-Preserving
+- IX. Fork Drift Must Be Minimized
 Added sections: none
-Removed sections: N/A
-Templates requiring updates: future specs and plans that change failure handling
-must define diagnostic evidence, repair guidance boundaries, and the
-machine-readable fields that make a failure actionable before any repair mode
-is introduced.
+Removed sections: none
+Templates requiring updates:
+- updated: .specify/templates/plan-template.md
+- updated: .specify/templates/tasks-template.md
 Follow-up items: none.
 -->
 
@@ -21,14 +20,13 @@ Follow-up items: none.
 ## Evaluation Scope
 
 This constitution governs the evaluation harness for `hotel-example-site`.
-The harness evaluates the quality of the existing hotel sample site as a
-system under test. It does not govern product behavior changes to the site
-itself.
+The harness evaluates the quality of the existing hotel sample site as a system
+under test. It does not govern product behavior changes to the site itself.
 
 The harness MUST live under `evaluation/` unless an amendment explicitly
-changes that boundary. The original application source, fixtures, static
-pages, and existing Playwright tests are treated as the system under test
-until a later approved implementation task states otherwise.
+changes that boundary. The original application source, fixtures, static pages,
+and existing Playwright tests are treated as the system under test until an
+approved specification states otherwise.
 
 ## Core Principles
 
@@ -42,8 +40,8 @@ test files, build configuration, or package scripts as part of constitution
 work. Any later task that changes files outside `evaluation/` MUST state the
 reason, expected blast radius, and rollback path before implementation.
 
-Rationale: the harness must be able to evaluate the repository without
-silently becoming part of the product implementation it is measuring.
+Rationale: the harness must evaluate the repository without silently becoming
+part of the product implementation it is measuring.
 
 ### II. Close the Evaluation Loop First
 
@@ -62,8 +60,7 @@ exercise all configured layers so the harness proves its control flow before
 the test pyramid is refined.
 
 Rationale: a closed evidence loop creates the feedback surface needed to safely
-add, move, remove, and eventually repair tests without requiring repair mode in
-the first implementation.
+add, move, remove, and eventually repair tests.
 
 ### III. Evidence Is a Required Output
 
@@ -87,8 +84,8 @@ MUST be machine-readable so later automation can compare runs, detect
 regressions, produce repair guidance, and decide whether repair or migration
 work is safe.
 
-Rationale: evaluation that cannot be replayed, inspected, or compared is not
-a dependable quality signal.
+Rationale: evaluation that cannot be replayed, inspected, or compared is not a
+dependable quality signal.
 
 ### IV. Tests Move Down the Pyramid When Their Responsibility Allows It
 
@@ -158,18 +155,17 @@ The default growth order is:
 5. define the cadence for full and collect-all runs
 6. add repair mode only after the previous artifacts are stable
 
-New growth features MUST NOT silently mutate product code, root E2E tests,
-root CI configuration, or package scripts. If a growth task needs to change
-outside `evaluation/`, its spec and plan MUST state the exact files, rationale,
-blast radius, and rollback path.
+New growth features MUST NOT silently mutate product code, root E2E tests, root
+CI configuration, or package scripts. If a growth task needs to change outside
+`evaluation/`, its spec and plan MUST state the exact files, rationale, blast
+radius, and rollback path.
 
 Generated growth reports MUST be committed only when they are stable guidance
 or templates. Per-run reports, traces, logs, and screenshots remain operational
 artifacts under `evaluation/runs/` and MUST stay uncommitted by default.
 
-Rationale: a harness that changes tests, CI, or repair behavior without a
-reviewable decision record becomes another source of hidden risk. Growth work
-must make the next human decision easier before it automates that decision.
+Rationale: growth work must make the next human decision easier before it
+automates that decision.
 
 ### VII. Failure Diagnostics Must Be Actionable Before Repair
 
@@ -199,6 +195,61 @@ Rationale: repair automation can only be trusted after the harness demonstrates
 that it can explain failures well enough for a reviewer to act without reading
 every raw log first.
 
+### VIII. E2E Thinning Is Evidence-Preserving
+
+Existing root E2E tests MAY be thinned only after a committed migration report
+marks the covered behavior as ready and identifies lower-layer evidence for the
+same responsibility.
+
+E2E thinning MUST:
+
+- preserve the lower-layer tests that justify the thinning
+- preserve at least one representative smoke or flow check for each user
+  journey family that still needs browser-level confidence
+- keep explicitly marked `keep_e2e` journeys intact unless a later amendment
+  replaces them with equivalent browser-flow coverage
+- record which assertion scope was thinned, retained, or deferred
+- validate both the gate and the relevant full E2E mode after changes
+- avoid product source changes unless a separate product-behavior issue is
+  specified
+
+If a candidate cannot be safely thinned during implementation, it MUST be
+recorded as retained or deferred with the reason. Thinning MUST NOT be used to
+hide a failing or flaky assertion.
+
+Rationale: moving detail out of E2E is only an improvement when the same
+behavior remains covered at the right layer and the remaining E2E suite still
+proves representative browser journeys.
+
+### IX. Fork Drift Must Be Minimized
+
+This repository is a fork of an upstream project. Evaluation harness work MUST
+avoid edits to upstream-owned or base-branch-volatile files when an
+evaluation-local artifact, report, or configuration can achieve the same
+review outcome.
+
+When an approved feature must touch files outside `evaluation/`, the change
+MUST:
+
+- be limited to the smallest behavior-preserving edit that satisfies the
+  approved specification
+- avoid broad formatting, reordering, renaming, or unrelated cleanup in
+  upstream-owned files
+- list every outside-`evaluation/` file touched, the reason it must be touched,
+  and the expected conflict risk
+- re-check the target files against the latest fork `main` before editing when
+  the feature depends on root E2E or other base-branch files
+- prefer stable identities such as path, ordinal, assertion scope, and report
+  candidate id over fragile line-only references
+
+For E2E thinning, this means root E2E edits MUST be assertion-level and tied to
+committed migration candidates. The implementation MUST NOT rewrite whole test
+files, normalize unrelated formatting, or restructure tests merely to make
+thinning easier.
+
+Rationale: the fork should remain easy to sync with upstream. Evaluation work
+must reduce diagnostic cost without creating unnecessary merge conflicts.
+
 ## Test Layer Ownership
 
 The harness recognizes the following test layers:
@@ -216,8 +267,8 @@ The default gate order is:
 4. E2E smoke tests
 5. full E2E tests, if configured
 
-A failure in an earlier required layer SHOULD stop later layers unless the
-run mode explicitly requests full evidence collection.
+A failure in an earlier required layer SHOULD stop later layers unless the run
+mode explicitly requests full evidence collection.
 
 ## Governance
 
@@ -241,6 +292,4 @@ task. A task is compliant only when it states:
 - which test layer it affects
 - what evidence proves completion
 
-**Version**: 1.2.0
-**Ratified**: 2026-05-01
-**Last Amended**: 2026-05-04
+**Version**: 1.4.0 | **Ratified**: 2026-05-01 | **Last Amended**: 2026-05-04

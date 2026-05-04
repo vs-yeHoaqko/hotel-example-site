@@ -29,7 +29,13 @@
       "required": true,
       "modes": ["gate", "full", "collect-all"],
       "timeoutMs": 60000,
-      "command": ["node", "--test", "evaluation/tests/unit/billing.test.mjs"],
+      "command": [
+        "node",
+        "--test",
+        "evaluation/tests/unit/billing.test.mjs",
+        "evaluation/tests/unit/thinning-decision-model.test.mjs",
+        "evaluation/tests/unit/migration-candidate-report.test.mjs"
+      ],
       "dependsOn": [],
       "requires": ["node"]
     },

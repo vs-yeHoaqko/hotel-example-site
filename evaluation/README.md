@@ -18,12 +18,38 @@ The default gate currently runs these layers in order:
 | Layer         | Purpose                                                                                |
 | ------------- | -------------------------------------------------------------------------------------- |
 | `static`      | Checks evaluation files with Prettier.                                                 |
-| `unit`        | Runs focused Node tests for directly importable billing logic.                         |
+| `unit`        | Runs focused Node tests for billing logic and evaluation model/report contracts.       |
 | `integration` | Runs page-local Playwright checks for reservation form behavior.                       |
 | `smoke-e2e`   | Runs thin localized browser journeys, including one reservation completion happy path. |
 
 `full-e2e` is available in explicit modes and runs the existing root `e2e/`
 suite after the gate layers.
+
+## E2E Thinning Records
+
+The reservation root E2E suite has been thinned where lower-layer evidence owns
+the detailed behavior. The browser journeys remain in root E2E; detailed
+contact-field, validation-feedback, and total-bill assertions are recorded as
+owned by integration or unit tests.
+
+The canonical thinning record is:
+
+```text
+evaluation/config/thinning-decisions.config.json
+```
+
+The human-readable view is generated into:
+
+```text
+evaluation/reports/migration-candidates.md
+```
+
+Read the report by candidate ID. Each reviewed candidate shows its readiness
+status, thinning outcome, decision reason, lower-layer evidence, remaining E2E
+coverage, outside files, and conflict risk. `thinned` means the detailed root
+E2E assertion was removed or reduced; `keep_e2e` means the browser journey
+stays as representative end-to-end coverage; `retained` and `deferred` are
+available for reviewed candidates that must stay unchanged.
 
 ## Commands
 

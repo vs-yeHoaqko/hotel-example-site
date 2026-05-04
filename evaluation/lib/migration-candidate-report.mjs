@@ -1,4 +1,5 @@
 import { STATUS_ORDER } from "./migration-candidate-model.mjs";
+import { THINNING_OUTCOME_ORDER } from "./thinning-decision-model.mjs";
 
 export function renderMigrationCandidateReport(model) {
   const lines = [
@@ -8,6 +9,8 @@ export function renderMigrationCandidateReport(model) {
     "",
     `- Generated command: \`${model.metadata.command}\``,
     `- Scope: ${model.metadata.scope}`,
+    `- Source candidates: \`${model.metadata.sourceCandidates}\``,
+    `- Thinning decision source: \`${model.metadata.thinningDecisionSource}\``,
     `- Ownership source: \`${model.metadata.ownershipSource}\``,
     `- Inventory source: \`${model.metadata.inventorySource}\``,
     `- Report path: \`${model.metadata.reportPath}\``,
@@ -18,6 +21,11 @@ export function renderMigrationCandidateReport(model) {
 
   for (const status of STATUS_ORDER) {
     lines.push(`- \`${status}\`: ${model.counts[status]}`);
+  }
+
+  lines.push("", "## Thinning Outcome Counts", "");
+  for (const outcome of THINNING_OUTCOME_ORDER) {
+    lines.push(`- \`${outcome}\`: ${model.thinningDecisionCounts[outcome]}`);
   }
 
   lines.push("", "## Candidates By Behavior", "");
@@ -45,6 +53,7 @@ export function renderMigrationCandidateReport(model) {
       lines.push(`- Lower-layer evidence: ${formatEvidence(candidate)}`);
       lines.push(`- Remaining E2E coverage: ${candidate.remainingE2ECoverage}`);
       lines.push(`- Recommendation: ${candidate.recommendation}`);
+      renderThinningDecision(lines, candidate);
       lines.push("");
     }
   }
@@ -89,6 +98,36 @@ function formatEvidence(candidate) {
     return "None yet; this candidate is blocked until direct lower-layer evidence exists.";
   }
   return candidate.lowerLayerEvidence.map((item) => `\`${item}\``).join(", ");
+}
+
+function renderThinningDecision(lines, candidate) {
+  const decision = candidate.thinningDecision;
+  if (!decision) {
+    lines.push("- Thinning outcome: `not_recorded`");
+    return;
+  }
+
+  lines.push(`- Thinning outcome: \`${decision.outcome}\``);
+  lines.push(`- Decision reason: ${decision.reason}`);
+  lines.push(`- Decision owner layer: \`${decision.ownerLayer}\``);
+  lines.push(
+    `- Decision lower-layer evidence: ${formatList(decision.lowerLayerEvidence)}`,
+  );
+  lines.push(
+    `- Decision remaining E2E coverage: ${decision.remainingE2ECoverage}`,
+  );
+  lines.push(`- Outside files: ${formatList(decision.outsideFiles)}`);
+  lines.push(`- Conflict risk: \`${decision.conflictRisk}\``);
+  if (decision.notes.length > 0) {
+    lines.push(`- Notes: ${decision.notes.join("; ")}`);
+  }
+}
+
+function formatList(items) {
+  if (items.length === 0) {
+    return "None";
+  }
+  return items.map((item) => `\`${item}\``).join(", ");
 }
 
 function escapeCode(value) {
