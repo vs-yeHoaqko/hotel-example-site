@@ -1,13 +1,18 @@
 <!--
 Sync Impact Report
-Version change: 1.0.0 -> 1.1.0
+Version change: 1.1.0 -> 1.2.0
 Modified principles:
-- IV. Tests Move Down the Pyramid When Their Responsibility Allows It
-Added principles:
+- III. Evidence Is a Required Output
+- V. Repair Loops Must Preserve Trust
 - VI. Harness Growth Is Reviewable
+Added principles:
+- VII. Failure Diagnostics Must Be Actionable Before Repair
 Added sections: none
 Removed sections: N/A
-Templates requiring updates: future specs and plans must include migration-candidate evidence before E2E thinning, CI wiring, cadence changes, or repair mode work.
+Templates requiring updates: future specs and plans that change failure handling
+must define diagnostic evidence, repair guidance boundaries, and the
+machine-readable fields that make a failure actionable before any repair mode
+is introduced.
 Follow-up items: none.
 -->
 
@@ -70,11 +75,17 @@ At minimum, a run MUST record:
 - command results per test layer
 - pass, fail, skipped, and timeout counts
 - failure category when classification is possible
+- failed test identity when a layer exposes test-case results
+- reproduction command for each failed test or failed layer when it can be
+  generated safely
+- concise diagnostic message and artifact references for each actionable
+  failure
 - artifact paths for screenshots, traces, reports, logs, diffs, and summaries
 
 Human-readable reports are useful but insufficient. The canonical run outcome
 MUST be machine-readable so later automation can compare runs, detect
-regressions, and decide whether repair or migration work is safe.
+regressions, produce repair guidance, and decide whether repair or migration
+work is safe.
 
 Rationale: evaluation that cannot be replayed, inspected, or compared is not
 a dependable quality signal.
@@ -124,6 +135,10 @@ Repair attempts MUST have bounded retries. If the same failure persists after
 the configured retry limit, the harness MUST stop and report the unresolved
 state rather than continuing to mutate files.
 
+Repair mode MUST NOT be introduced before the harness can emit structured
+diagnostics and non-mutating repair guidance for the same failure classes that
+repair mode would attempt to change.
+
 Rationale: an automatic repair loop is only useful when its changes are
 reviewable and its success criteria are stricter than "the current failure
 disappeared".
@@ -138,9 +153,10 @@ The default growth order is:
 
 1. produce a migration-candidate report from ownership and current tests
 2. review and approve which existing E2E cases may be thinned
-3. wire the stable gate into CI
-4. define the cadence for full and collect-all runs
-5. add repair mode only after the previous artifacts are stable
+3. produce actionable failure diagnostics and non-mutating repair guidance
+4. wire the stable gate into CI
+5. define the cadence for full and collect-all runs
+6. add repair mode only after the previous artifacts are stable
 
 New growth features MUST NOT silently mutate product code, root E2E tests,
 root CI configuration, or package scripts. If a growth task needs to change
@@ -154,6 +170,34 @@ artifacts under `evaluation/runs/` and MUST stay uncommitted by default.
 Rationale: a harness that changes tests, CI, or repair behavior without a
 reviewable decision record becomes another source of hidden risk. Growth work
 must make the next human decision easier before it automates that decision.
+
+### VII. Failure Diagnostics Must Be Actionable Before Repair
+
+When an evaluation layer fails, the harness MUST make the failure actionable
+before asking a human or agent to inspect raw artifacts.
+
+For each failed test case or failed command where the runner can extract
+structured evidence, diagnostics SHOULD include:
+
+- layer name and owner layer
+- failed test title, source path, and line when available
+- concise failure summary
+- expected and actual values when the test framework reports them
+- primary error message and trimmed stack or location
+- screenshot, trace, video, JSON result, stdout, and stderr artifact references
+- safe reproduction command scoped to the failed test or owning layer
+- likely files or behavior areas to inspect, with confidence and rationale
+- whether the guidance points to product code, evaluation test code,
+  environment setup, flakiness investigation, or unknown ownership
+
+Diagnostic guidance MUST be advisory. It MAY identify likely files and next
+steps, but it MUST NOT change product code, test code, expectations, CI, or
+package scripts. If confidence is low, the harness MUST say so rather than
+presenting a guess as a fix.
+
+Rationale: repair automation can only be trusted after the harness demonstrates
+that it can explain failures well enough for a reviewer to act without reading
+every raw log first.
 
 ## Test Layer Ownership
 
@@ -197,6 +241,6 @@ task. A task is compliant only when it states:
 - which test layer it affects
 - what evidence proves completion
 
-**Version**: 1.1.0
+**Version**: 1.2.0
 **Ratified**: 2026-05-01
-**Last Amended**: 2026-05-01
+**Last Amended**: 2026-05-04
