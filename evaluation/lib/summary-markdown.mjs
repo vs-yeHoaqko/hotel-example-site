@@ -25,6 +25,22 @@ export function renderSummaryMarkdown(summary, ownership) {
     );
   }
 
+  if (summary.diagnostics.length) {
+    lines.push(
+      "",
+      "## Failure Diagnostics",
+      "",
+      "| ID | Type | Layer | Classification | Confidence | Message | Artifacts | Guidance |",
+      "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    );
+
+    for (const diagnostic of summary.diagnostics) {
+      lines.push(
+        `| ${cell(diagnostic.id)} | ${cell(diagnostic.type)} | ${cell(diagnostic.layer)} | ${cell(diagnostic.classification)} | ${cell(diagnostic.guidance.confidence)} | ${cell(diagnostic.message)} | ${cell(formatArtifacts(diagnostic.artifacts))} | ${cell(formatGuidance(diagnostic.guidance))} |`,
+      );
+    }
+  }
+
   lines.push(
     "",
     "## Counts",
@@ -62,4 +78,26 @@ export function renderSummaryMarkdown(summary, ownership) {
   }
 
   return `${lines.join("\n")}\n`;
+}
+
+function formatArtifacts(artifacts) {
+  if (!artifacts.length) {
+    return "";
+  }
+  return artifacts
+    .map((artifact) => `${artifact.label}: ${artifact.path}`)
+    .join("<br>");
+}
+
+function formatGuidance(guidance) {
+  const targets = guidance.likelyTargets
+    .map((target) => target.path ?? target.label)
+    .join(", ");
+  return `${guidance.action}: ${guidance.rationale}${targets ? ` Targets: ${targets}` : ""}`;
+}
+
+function cell(value) {
+  return String(value ?? "")
+    .replaceAll("|", "\\|")
+    .replace(/\r?\n/g, "<br>");
 }

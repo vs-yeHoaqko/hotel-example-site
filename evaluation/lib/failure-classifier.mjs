@@ -11,6 +11,9 @@ export function classifyFailure(layer, result) {
   ) {
     return "environment";
   }
+  if (/Timeout|Test timeout/i.test(output)) {
+    return "timeout";
+  }
   if (layer.failureClassification) {
     return layer.failureClassification;
   }
@@ -22,9 +25,6 @@ export function classifyFailure(layer, result) {
       return "test";
     }
     return "product";
-  }
-  if (/Timeout/i.test(output)) {
-    return "timeout";
   }
   if (/Error: expect|expect\(.*\)|locator/i.test(output)) {
     return "product";

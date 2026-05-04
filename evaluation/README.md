@@ -126,6 +126,23 @@ The implementation has been verified with:
 - deployed target metadata: `target: "deployed"` recorded when
   `USE_DEPLOYED_SITE=true`
 
+## Operational Notes
+
+- The `static` layer uses Prettier as a formatting gate, not as a semantic
+  static analyzer. It checks committed evaluation harness files only. `AGENTS.md`
+  and constitution files are not part of the default gate unless the config is
+  intentionally expanded.
+- `evaluation/runs/` contains generated evidence. It is ignored by Git and
+  excluded from Prettier so local runs do not make formatting checks fail.
+- On constrained sandboxes, Node's default test-runner isolation can fail with
+  `spawn EPERM`. The canonical local/CI command remains `node --test ...`; for
+  sandbox-only diagnosis, run the same files with `--test-isolation=none`.
+- The smoke reservation completion journey is the timeout-prone gate test
+  because it covers page navigation, popup handling, confirmation, modal
+  success, and window close. The smoke Playwright config uses a 60 second
+  per-test timeout to reduce false failures while keeping the layer timeout
+  bounded.
+
 ## Boundaries
 
 The harness is intentionally evaluation-local:

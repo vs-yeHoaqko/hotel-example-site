@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+For the active evaluation-harness feature, read the current plan:
+`evaluation/specs/004-failure-diagnostics-repair-guidance/plan.md`
 
 <!-- SPECKIT END -->
 

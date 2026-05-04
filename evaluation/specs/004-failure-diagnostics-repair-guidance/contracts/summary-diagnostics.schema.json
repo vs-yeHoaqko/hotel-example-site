@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "summary-diagnostics.schema.json",
+  "title": "Evaluation Summary Diagnostics Contract",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "type",
+      "layer",
+      "ownerLayer",
+      "classification",
+      "title",
+      "source",
+      "message",
+      "excerpt",
+      "expected",
+      "actual",
+      "reproduction",
+      "artifacts",
+      "guidance"
+    ],
+    "properties": {
+      "id": { "type": "string" },
+      "type": {
+        "type": "string",
+        "enum": ["test_case", "layer_command", "runner_error"]
+      },
+      "layer": { "type": "string" },
+      "ownerLayer": {
+        "type": "string",
+        "enum": ["unit", "integration", "e2e", "gate", "unknown"]
+      },
+      "classification": {
+        "type": "string",
+        "enum": ["product", "test", "environment", "timeout", "unknown"]
+      },
+      "title": { "type": "string" },
+      "source": {
+        "anyOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "line"],
+            "properties": {
+              "path": { "type": "string" },
+              "line": { "type": ["integer", "null"] }
+            }
+          },
+          { "type": "null" }
+        ]
+      },
+      "message": { "type": "string" },
+      "excerpt": { "type": ["string", "null"] },
+      "expected": { "type": ["string", "null"] },
+      "actual": { "type": ["string", "null"] },
+      "reproduction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["level", "display"],
+        "properties": {
+          "level": { "type": "string", "enum": ["test", "layer"] },
+          "display": { "type": "string" }
+        }
+      },
+      "artifacts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "kind", "label"],
+          "properties": {
+            "path": { "type": "string" },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "stdout",
+                "stderr",
+                "playwright_json",
+                "trace",
+                "screenshot",
+                "video",
+                "attachment",
+                "summary",
+                "other"
+              ]
+            },
+            "label": { "type": "string" }
+          }
+        }
+      },
+      "guidance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action", "confidence", "rationale", "likelyTargets"],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "inspect_product",
+              "inspect_test",
+              "fix_environment",
+              "investigate_unknown"
+            ]
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "rationale": { "type": "string" },
+          "likelyTargets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "path", "label", "rationale"],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "product_file",
+                    "evaluation_file",
+                    "behavior_area",
+                    "environment"
+                  ]
+                },
+                "path": { "type": ["string", "null"] },
+                "label": { "type": "string" },
+                "rationale": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

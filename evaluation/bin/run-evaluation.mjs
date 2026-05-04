@@ -122,6 +122,7 @@ async function main() {
       layers,
       errors,
       repoRoot,
+      runDirRel,
     });
   } catch (error) {
     errors.push(error.stack || error.message);
@@ -135,6 +136,7 @@ async function main() {
       layers,
       errors,
       repoRoot,
+      runDirRel,
     });
   }
 

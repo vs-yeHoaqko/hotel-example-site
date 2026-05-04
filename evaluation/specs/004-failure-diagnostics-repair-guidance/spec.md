@@ -101,10 +101,11 @@ runner errors.
 **Acceptance Scenarios**:
 
 1. Given a run passes, when `summary.json` is generated, then diagnostics are
-   present as an empty array or another documented stable empty shape.
+   present as `diagnostics: []`.
 2. Given a run fails, when `summary.json` is generated, then every diagnostic
-   uses bounded enum fields for type, classification, owner layer, and
-   confidence level.
+   uses bounded enum fields for type (`test_case`, `layer_command`,
+   `runner_error`), owner layer, confidence, and the existing layer
+   classification values.
 3. Given artifact paths appear in diagnostics, when schema validation runs,
    then those paths are relative to the run directory and never absolute.
 
@@ -149,9 +150,9 @@ Out of scope:
   artifacts under `evaluation/`.
 - **FR-002**: The feature MUST NOT modify product source, root E2E tests, root
   package scripts, root Playwright config, or GitHub Actions workflows.
-- **FR-003**: `summary.json` MUST include a machine-readable diagnostics
-  collection for every run.
-- **FR-004**: Passed runs MUST produce a stable empty diagnostics shape.
+- **FR-003**: `summary.json` MUST include a machine-readable `diagnostics`
+  array for every run.
+- **FR-004**: Passed runs MUST produce `diagnostics: []`.
 - **FR-005**: For failed Playwright layers with JSON reporter output,
   diagnostics MUST include each failed test title.
 - **FR-006**: For failed Playwright tests, diagnostics SHOULD include source
@@ -166,20 +167,24 @@ Out of scope:
   screenshots, traces, videos, and output files when they are present.
 - **FR-011**: All diagnostic artifact paths MUST be relative to the run
   directory and MUST NOT be absolute paths.
-- **FR-012**: Diagnostics MUST include a safe reproduction command for the
-  failed layer or failed test when one can be generated from recorded argv and
-  test identity.
+- **FR-012**: Diagnostics MUST include a safe reproduction command. When a
+  failed test identity can be extracted safely, diagnostics SHOULD provide a
+  test-level reproduction command; otherwise they MUST fall back to the failed
+  layer-level reproduction command.
 - **FR-013**: Reproduction commands MUST be advisory display strings and MUST
   NOT require shell-specific quoting as the canonical execution contract.
-- **FR-014**: Diagnostics MUST include a guidance object that identifies the
-  recommended human action for that failure.
+- **FR-014**: Diagnostics MUST include `type` as one of `test_case`,
+  `layer_command`, or `runner_error`; `classification` using the existing layer
+  classification enum (`product`, `test`, `environment`, `timeout`, `unknown`);
+  and a guidance object that identifies the recommended human action for that
+  failure.
 - **FR-015**: Guidance MUST include likely files or behavior areas to inspect
   when the harness can infer them from layer ownership, test path, title,
   message, or classification.
 - **FR-016**: Guidance MUST include rationale for each likely file or behavior
   area.
-- **FR-017**: Guidance MUST include a confidence value or level and MUST use low
-  confidence when ownership is ambiguous.
+- **FR-017**: Guidance MUST include `confidence` as one of `low`, `medium`, or
+  `high`, and MUST use `low` when ownership is ambiguous.
 - **FR-018**: Environment failures MUST prioritize tooling, dependency,
   Playwright browser, dev-server, or timeout remediation over product-code
   inspection.
@@ -196,8 +201,9 @@ Out of scope:
   guidance.
 - **FR-023**: `summary.md` MUST render a Failure Diagnostics section when
   diagnostics are present.
-- **FR-024**: `summary.md` MUST remain concise and point to raw artifacts
-  instead of embedding long logs or large JSON payloads.
+- **FR-024**: Diagnostic entries in `summary.json` and `summary.md` MUST remain
+  concise, MAY include bounded excerpts, and MUST point to raw artifacts instead
+  of embedding full stdout, stderr, stack traces, logs, or large JSON payloads.
 - **FR-025**: The committed `summary.schema.json` MUST validate the diagnostic
   shape.
 - **FR-026**: `evaluation/examples/summary.example.json` MUST be updated to show
@@ -256,6 +262,22 @@ Out of scope:
 - Q: Should likely files be treated as authoritative?
   A: No. They are advisory and must include confidence and rationale. Low
   confidence should be explicit.
+- Q: What stable empty diagnostics shape should passed runs use?
+  A: `summary.json` must always include a `diagnostics` array; passed runs use
+  `diagnostics: []`.
+- Q: What reproduction command granularity should diagnostics provide?
+  A: Prefer test-level commands when the failed test identity can be extracted
+  safely; otherwise fall back to layer-level commands.
+- Q: How should guidance confidence be represented?
+  A: Use a bounded `confidence` enum with `low`, `medium`, and `high`.
+- Q: How much raw failure detail should diagnostic entries embed?
+  A: Include only short summaries and bounded excerpts in diagnostic entries;
+  link full logs, stacks, and JSON payloads as artifacts.
+- Q: Which classification enum should diagnostics use?
+  A: Reuse the existing layer classification enum: `product`, `test`,
+  `environment`, `timeout`, and `unknown`.
+- Q: Which diagnostic type enum should the schema expose?
+  A: Use `test_case`, `layer_command`, and `runner_error`.
 
 ## Assumptions
 
