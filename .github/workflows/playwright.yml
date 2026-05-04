@@ -13,21 +13,21 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.59.0-noble
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
       options: --user 1001
     steps:
       - uses: actions/checkout@v6
       - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+        uses: pnpm/action-setup@26f6d4f2c533a43e6b5da0b4a5dd983f98f7b49a # v6.0.4
         with:
-          version: 10
+          version: 11
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: "package.json"
           cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm ci
       - name: Build project
         if: github.event_name == 'pull_request'
         run: pnpm run build
