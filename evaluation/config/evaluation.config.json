@@ -47,7 +47,9 @@
         "evaluation/tests/unit/migration-candidate-report.test.mjs",
         "evaluation/tests/unit/environment-preflight.test.mjs",
         "evaluation/tests/unit/run-health-model.test.mjs",
-        "evaluation/tests/unit/run-health-report.test.mjs"
+        "evaluation/tests/unit/run-health-report.test.mjs",
+        "evaluation/tests/unit/test-meaningfulness-model.test.mjs",
+        "evaluation/tests/unit/test-meaningfulness-report.test.mjs"
       ],
       "dependsOn": [],
       "requires": ["node"]

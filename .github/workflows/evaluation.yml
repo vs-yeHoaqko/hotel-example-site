@@ -73,6 +73,9 @@ jobs:
       - name: Generate run health report
         if: ${{ always() }}
         run: node evaluation/bin/generate-run-health.mjs
+      - name: Generate test meaningfulness report
+        if: ${{ always() }}
+        run: node evaluation/bin/generate-test-meaningfulness.mjs
       - name: Upload evaluation evidence
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
@@ -81,5 +84,6 @@ jobs:
           path: |
             evaluation/runs/**
             evaluation/reports/run-health.md
+            evaluation/reports/test-meaningfulness.md
           if-no-files-found: warn
           retention-days: 14

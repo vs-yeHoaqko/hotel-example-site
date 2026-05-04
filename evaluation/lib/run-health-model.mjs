@@ -26,6 +26,7 @@ export async function createRunHealthModel({
   const readableRuns = await readRunSummaries({ repoRoot, config, warnings });
   const selectedRuns = readableRuns.slice(0, config.maxRuns);
   const layerHealth = selectedRuns.flatMap((run) => run.layers);
+  const trendSummary = createTrendSummary(selectedRuns);
   const slowLayers = layerHealth
     .filter((layer) => layer.slow)
     .sort(compareSlowLayers);
@@ -68,6 +69,7 @@ export async function createRunHealthModel({
     },
     selectedRuns,
     layerHealth,
+    trendSummary,
     slowLayers,
     slowTests: truncatedSlowTests,
     slowTestObservationCount: slowTests.length,
@@ -85,6 +87,64 @@ export async function createRunHealthModel({
       warnings,
     }),
   };
+}
+
+function createTrendSummary(selectedRuns) {
+  const statusCounts = {};
+  const layerObservations = new Map();
+
+  for (const run of selectedRuns) {
+    statusCounts[run.status] = (statusCounts[run.status] ?? 0) + 1;
+    for (const layer of run.layers) {
+      if (!layerObservations.has(layer.name)) {
+        layerObservations.set(layer.name, []);
+      }
+      layerObservations.get(layer.name).push({
+        runId: run.runId,
+        status: layer.status,
+        durationMs: layer.durationMs,
+        slow: layer.slow,
+        failed: isFailedLayer(layer),
+      });
+    }
+  }
+
+  return {
+    selectedRunCount: selectedRuns.length,
+    statusCounts: sortObjectByKey(statusCounts),
+    limitedEvidence: selectedRuns.length < 2,
+    layerTrends: Array.from(layerObservations.entries())
+      .map(([layer, observations]) => createLayerTrend(layer, observations))
+      .sort((a, b) => a.layer.localeCompare(b.layer)),
+  };
+}
+
+function createLayerTrend(layer, observations) {
+  const latest = observations[0];
+  const previous = observations[1] ?? null;
+  return {
+    layer,
+    latestRunId: latest?.runId ?? null,
+    latestStatus: latest?.status ?? "unknown",
+    latestDurationMs: latest?.durationMs ?? null,
+    previousRunId: previous?.runId ?? null,
+    previousDurationMs: previous?.durationMs ?? null,
+    deltaMs:
+      typeof latest?.durationMs === "number" &&
+      typeof previous?.durationMs === "number"
+        ? latest.durationMs - previous.durationMs
+        : null,
+    observationCount: observations.length,
+    slowCount: observations.filter((item) => item.slow).length,
+    failedCount: observations.filter((item) => item.failed).length,
+  };
+}
+
+function isFailedLayer(layer) {
+  return (
+    layer.timedOut ||
+    ["failed", "timedOut", "interrupted"].includes(layer.status)
+  );
 }
 
 function createRecommendedReviewFocus({
@@ -151,4 +211,10 @@ function compareEvidence(a, b) {
 
 function compareNumberDescending(a, b) {
   return (b ?? 0) - (a ?? 0);
+}
+
+function sortObjectByKey(value) {
+  return Object.fromEntries(
+    Object.entries(value).sort(([left], [right]) => left.localeCompare(right)),
+  );
 }

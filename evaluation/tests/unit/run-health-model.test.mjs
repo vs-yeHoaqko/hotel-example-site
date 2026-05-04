@@ -85,8 +85,94 @@ test("selects latest readable runs and records malformed or missing evidence war
   ]);
   assert.equal(model.slowLayers.length, 2);
   assert.equal(model.slowTests.length, 1);
+  assert.deepEqual(model.trendSummary.statusCounts, {
+    passed: 2,
+  });
+  assert.equal(model.trendSummary.limitedEvidence, false);
+  assert.deepEqual(
+    model.trendSummary.layerTrends.map((trend) => [
+      trend.layer,
+      trend.latestDurationMs,
+      trend.previousDurationMs,
+      trend.deltaMs,
+    ]),
+    [
+      ["integration", 41000, null, null],
+      ["smoke-e2e", 31000, null, null],
+    ],
+  );
   assert.match(model.warnings.join("\n"), /malformed JSON/);
   assert.match(model.warnings.join("\n"), /missing-results\.json: missing/);
+});
+
+test("builds layer trends from latest and previous comparable observations", async () => {
+  const repoRoot = await createTempRepo();
+  await writeConfig(repoRoot, { maxRuns: 3 });
+  await writeSummary(repoRoot, "20260101T000000Z-a", {
+    startedAt: "2026-01-01T00:00:00.000Z",
+    layers: [
+      layer({
+        name: "integration",
+        durationMs: 40000,
+      }),
+      layer({
+        name: "smoke-e2e",
+        durationMs: 29000,
+      }),
+    ],
+  });
+  await writeSummary(repoRoot, "20260102T000000Z-b", {
+    startedAt: "2026-01-02T00:00:00.000Z",
+    layers: [
+      layer({
+        name: "integration",
+        durationMs: 42000,
+      }),
+      layer({
+        name: "smoke-e2e",
+        status: "failed",
+        durationMs: 33000,
+      }),
+    ],
+  });
+  await writeSummary(repoRoot, "20260103T000000Z-c", {
+    startedAt: "2026-01-03T00:00:00.000Z",
+    status: "failed",
+    layers: [
+      layer({
+        name: "integration",
+        durationMs: 39000,
+      }),
+      layer({
+        name: "smoke-e2e",
+        durationMs: 31000,
+      }),
+    ],
+  });
+
+  const model = await createRunHealthModel({ repoRoot });
+
+  assert.equal(model.trendSummary.selectedRunCount, 3);
+  assert.deepEqual(model.trendSummary.statusCounts, {
+    failed: 1,
+    passed: 2,
+  });
+  assert.equal(model.trendSummary.limitedEvidence, false);
+  assert.deepEqual(
+    model.trendSummary.layerTrends.map((trend) => [
+      trend.layer,
+      trend.latestRunId,
+      trend.latestDurationMs,
+      trend.previousDurationMs,
+      trend.deltaMs,
+      trend.slowCount,
+      trend.failedCount,
+    ]),
+    [
+      ["integration", "20260103T000000Z-c", 39000, 42000, -3000, 1, 0],
+      ["smoke-e2e", "20260103T000000Z-c", 31000, 33000, -2000, 2, 1],
+    ],
+  );
 });
 
 test("extracts slow, unstable, retried, and environment Playwright evidence deterministically", async () => {
