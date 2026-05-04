@@ -1,5 +1,8 @@
 import { STATUS_ORDER } from "./migration-candidate-model.mjs";
-import { THINNING_OUTCOME_ORDER } from "./thinning-decision-model.mjs";
+import {
+  THINNING_EXECUTION_STATE_ORDER,
+  THINNING_OUTCOME_ORDER,
+} from "./thinning-decision-model.mjs";
 
 export function renderMigrationCandidateReport(model) {
   const lines = [
@@ -86,6 +89,64 @@ export function renderMigrationCandidateReport(model) {
   return `${lines.join("\n")}\n`;
 }
 
+export function renderThinningExecutionReport(model) {
+  const summary = model.thinningExecutionSummary;
+  const lines = [
+    "# E2E Thinning Execution Report",
+    "",
+    "## Metadata",
+    "",
+    `- Generated command: \`${model.metadata.command}\``,
+    `- Source candidates: \`${model.metadata.sourceCandidates}\``,
+    `- Thinning decision source: \`${model.metadata.thinningDecisionSource}\``,
+    `- Report path: \`${model.metadata.thinningExecutionReportPath}\``,
+    "",
+    "## Execution State Counts",
+    "",
+  ];
+
+  for (const state of THINNING_EXECUTION_STATE_ORDER) {
+    lines.push(`- \`${state}\`: ${summary.counts[state]}`);
+  }
+
+  lines.push(
+    "",
+    "## Decisions",
+    "",
+    "| Candidate | State | Owner Layer | Root E2E | Evidence | Remaining E2E | Conflict Risk | Reason |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- |",
+  );
+  if (summary.decisions.length === 0) {
+    lines.push("| None | - | - | - | - | - | - | - |");
+    return `${lines.join("\n")}\n`;
+  }
+  for (const decision of summary.decisions) {
+    lines.push(
+      formatRow([
+        code(decision.candidateId),
+        code(decision.executionState),
+        code(decision.ownerLayer),
+        code(`${decision.rootE2EPath} (${decision.assertionScope})`),
+        formatList(decision.lowerLayerEvidence),
+        escapeTable(decision.remainingE2ECoverage),
+        code(decision.conflictRisk),
+        escapeTable(decision.reason),
+      ]),
+    );
+  }
+
+  lines.push(
+    "",
+    "## Safety Notes",
+    "",
+    "- Report generation does not rewrite root-suite E2E files.",
+    "- `approved_to_thin` records reviewable intent; root-suite edits still require an explicit implementation task.",
+    "- `keep_e2e` decisions preserve representative browser journey coverage.",
+  );
+
+  return `${lines.join("\n")}\n`;
+}
+
 function formatLocation(candidate) {
   if (candidate.line === null) {
     return `${candidate.path}:missing (ordinal ${candidate.ordinal})`;
@@ -130,6 +191,18 @@ function formatList(items) {
   return items.map((item) => `\`${item}\``).join(", ");
 }
 
+function code(value) {
+  return `\`${escapeTable(value)}\``;
+}
+
 function escapeCode(value) {
   return value.replaceAll("`", "\\`");
+}
+
+function escapeTable(value) {
+  return String(value).replaceAll("|", "\\|").replaceAll("\n", " ");
+}
+
+function formatRow(cells) {
+  return `| ${cells.join(" | ")} |`;
 }

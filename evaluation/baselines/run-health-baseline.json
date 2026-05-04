@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "updatedFrom": "reviewed local gate evidence through 010-ci-health-trends",
+  "notes": [
+    "Initial baseline is warning-first and intentionally tolerant for browser layers.",
+    "Per-run artifacts remain under evaluation/runs/ and are not committed."
+  ],
+  "layers": [
+    {
+      "name": "environment",
+      "expectedStatus": "passed",
+      "durationMs": 2000,
+      "durationToleranceMs": 5000,
+      "slowAllowed": false,
+      "timeoutAllowed": false
+    },
+    {
+      "name": "static",
+      "expectedStatus": "passed",
+      "durationMs": 5000,
+      "durationToleranceMs": 5000,
+      "slowAllowed": false,
+      "timeoutAllowed": false
+    },
+    {
+      "name": "unit",
+      "expectedStatus": "passed",
+      "durationMs": 1000,
+      "durationToleranceMs": 5000,
+      "slowAllowed": false,
+      "timeoutAllowed": false
+    },
+    {
+      "name": "integration",
+      "expectedStatus": "passed",
+      "durationMs": 70000,
+      "durationToleranceMs": 20000,
+      "slowAllowed": true,
+      "timeoutAllowed": false
+    },
+    {
+      "name": "smoke-e2e",
+      "expectedStatus": "passed",
+      "durationMs": 50000,
+      "durationToleranceMs": 20000,
+      "slowAllowed": true,
+      "timeoutAllowed": false
+    },
+    {
+      "name": "full-e2e",
+      "modes": ["full", "collect-all"],
+      "expectedStatus": "passed",
+      "durationMs": 110000,
+      "durationToleranceMs": 30000,
+      "slowAllowed": true,
+      "timeoutAllowed": false
+    }
+  ]
+}

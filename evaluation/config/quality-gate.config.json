@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "reportPath": "evaluation/reports/quality-gate.md",
+  "sources": {
+    "runHealthConfigPath": "evaluation/config/run-health.config.json",
+    "testMeaningfulnessConfigPath": "evaluation/config/test-meaningfulness.config.json",
+    "migrationCandidatesConfigPath": "evaluation/config/migration-candidates.config.json",
+    "thinningDecisionsConfigPath": "evaluation/config/thinning-decisions.config.json"
+  },
+  "thresholds": [
+    {
+      "id": "weak-signal-tests",
+      "source": "test-meaningfulness",
+      "metric": "weakSignalTests",
+      "operator": "max",
+      "warnAt": 0,
+      "enforcement": "warn",
+      "rationale": "Tests without assertion-like checks should be reviewed before their count is treated as meaningful coverage."
+    },
+    {
+      "id": "total-tests",
+      "source": "test-meaningfulness",
+      "metric": "totalTests",
+      "operator": "min",
+      "warnAt": 136,
+      "enforcement": "warn",
+      "rationale": "A sudden drop in discovered tests may indicate accidental coverage loss or test discovery drift."
+    },
+    {
+      "id": "assertion-like-checks",
+      "source": "test-meaningfulness",
+      "metric": "assertionCount",
+      "operator": "min",
+      "warnAt": 572,
+      "enforcement": "warn",
+      "rationale": "A sudden drop in assertion-like checks may indicate weaker evidence."
+    },
+    {
+      "id": "baseline-regressions",
+      "source": "run-health",
+      "metric": "baselineRegressions",
+      "operator": "max",
+      "warnAt": 0,
+      "enforcement": "warn",
+      "rationale": "Layer regressions should be reviewed before tightening fail-enforced policy."
+    },
+    {
+      "id": "baseline-missing",
+      "source": "run-health",
+      "metric": "baselineMissing",
+      "operator": "max",
+      "warnAt": 0,
+      "enforcement": "warn",
+      "rationale": "Missing layer observations reduce confidence in the baseline comparison."
+    },
+    {
+      "id": "environment-evidence",
+      "source": "diagnostics",
+      "metric": "environmentEvidence",
+      "operator": "max",
+      "warnAt": 0,
+      "enforcement": "warn",
+      "rationale": "Environment evidence should be resolved before test or product changes."
+    },
+    {
+      "id": "flaky-evidence",
+      "source": "diagnostics",
+      "metric": "flakyEvidence",
+      "operator": "max",
+      "warnAt": 0,
+      "enforcement": "warn",
+      "rationale": "Flaky evidence should be made visible while the threshold remains warning-first."
+    }
+  ]
+}

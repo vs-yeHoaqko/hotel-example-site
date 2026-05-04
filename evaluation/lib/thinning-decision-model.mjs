@@ -7,8 +7,15 @@ export const THINNING_OUTCOME_ORDER = [
   "deferred",
   "keep_e2e",
 ];
+export const THINNING_EXECUTION_STATE_ORDER = [
+  "approved_to_thin",
+  "blocked",
+  "deferred",
+  "keep_e2e",
+];
 
 const VALID_OUTCOMES = new Set(THINNING_OUTCOME_ORDER);
+const VALID_EXECUTION_STATES = new Set(THINNING_EXECUTION_STATE_ORDER);
 const VALID_OWNER_LAYERS = new Set(["unit", "integration", "e2e"]);
 const VALID_CONFLICT_RISKS = new Set(["none", "low", "medium", "high"]);
 const ALLOWED_OUTSIDE_FILES = new Set([
@@ -202,6 +209,14 @@ function validateDecisionShape(decision, label, errors) {
   if (decision.outcome && !VALID_OUTCOMES.has(decision.outcome)) {
     errors.push(`${label}.outcome: invalid outcome "${decision.outcome}".`);
   }
+  if (
+    decision.executionState !== undefined &&
+    !VALID_EXECUTION_STATES.has(decision.executionState)
+  ) {
+    errors.push(
+      `${label}.executionState: invalid executionState "${decision.executionState}".`,
+    );
+  }
   if (decision.ownerLayer && !VALID_OWNER_LAYERS.has(decision.ownerLayer)) {
     errors.push(
       `${label}.ownerLayer: invalid ownerLayer "${decision.ownerLayer}".`,
@@ -238,6 +253,8 @@ function normalizeDecision(decision) {
   return {
     candidateId: decision.candidateId,
     outcome: decision.outcome,
+    executionState:
+      decision.executionState ?? executionStateFromOutcome(decision.outcome),
     reason: decision.reason,
     rootE2EPath: decision.rootE2EPath,
     assertionScope: decision.assertionScope,
@@ -248,4 +265,68 @@ function normalizeDecision(decision) {
     conflictRisk: decision.conflictRisk,
     notes: (decision.notes ?? []).toSorted(),
   };
+}
+
+export function createThinningExecutionSummary(candidates) {
+  const decisions = candidates
+    .map((candidate) => {
+      const decision = candidate.thinningDecision;
+      if (!decision) {
+        return {
+          candidateId: candidate.candidateId,
+          executionState: "blocked",
+          reason: "No thinning decision is recorded.",
+          rootE2EPath: candidate.path,
+          assertionScope: candidate.assertionScope,
+          ownerLayer: candidate.proposedOwnerLayer,
+          lowerLayerEvidence: [],
+          remainingE2ECoverage: candidate.remainingE2ECoverage,
+          allowedRootSuiteEdit: false,
+          conflictRisk: "unknown",
+        };
+      }
+      return {
+        candidateId: decision.candidateId,
+        executionState: decision.executionState,
+        reason: decision.reason,
+        rootE2EPath: decision.rootE2EPath,
+        assertionScope: decision.assertionScope,
+        ownerLayer: decision.ownerLayer,
+        lowerLayerEvidence: decision.lowerLayerEvidence,
+        remainingE2ECoverage: decision.remainingE2ECoverage,
+        allowedRootSuiteEdit: decision.outsideFiles.length > 0,
+        conflictRisk: decision.conflictRisk,
+      };
+    })
+    .toSorted((left, right) =>
+      left.candidateId.localeCompare(right.candidateId),
+    );
+
+  return {
+    counts: countExecutionStates(decisions),
+    decisions,
+  };
+}
+
+export function countExecutionStates(decisions) {
+  const counts = Object.fromEntries(
+    THINNING_EXECUTION_STATE_ORDER.map((state) => [state, 0]),
+  );
+  for (const decision of decisions) {
+    counts[decision.executionState] += 1;
+  }
+  return counts;
+}
+
+function executionStateFromOutcome(outcome) {
+  if (outcome === "thinned") {
+    return "approved_to_thin";
+  }
+  if (outcome === "retained") {
+    return "blocked";
+  }
+  if (outcome === "deferred") {
+    return "deferred";
+  }
+  return "keep_e2e";
 }

@@ -2,6 +2,7 @@ import {
   DEFAULT_RUN_HEALTH_CONFIG_PATH,
   loadRunHealthConfig,
 } from "./run-health-config.mjs";
+import { createBaselineComparison } from "./run-health-baseline.mjs";
 import {
   addLayerInstabilityEvidence,
   readRunHealthEvidence,
@@ -27,6 +28,12 @@ export async function createRunHealthModel({
   const selectedRuns = readableRuns.slice(0, config.maxRuns);
   const layerHealth = selectedRuns.flatMap((run) => run.layers);
   const trendSummary = createTrendSummary(selectedRuns);
+  const baselineComparison = await createBaselineComparison({
+    repoRoot,
+    baselinePath: config.baselinePath,
+    selectedRuns,
+    warnings,
+  });
   const slowLayers = layerHealth
     .filter((layer) => layer.slow)
     .sort(compareSlowLayers);
@@ -61,6 +68,7 @@ export async function createRunHealthModel({
       configPath: config.configPath,
       runsDirectory: config.runsDirectory,
       reportPath: config.reportPath,
+      baselinePath: config.baselinePath,
       maxRuns: config.maxRuns,
       topSlowTests: config.topSlowTests,
       testSlowThresholdMs: config.testSlowThresholdMs,
@@ -70,6 +78,7 @@ export async function createRunHealthModel({
     selectedRuns,
     layerHealth,
     trendSummary,
+    baselineComparison,
     slowLayers,
     slowTests: truncatedSlowTests,
     slowTestObservationCount: slowTests.length,

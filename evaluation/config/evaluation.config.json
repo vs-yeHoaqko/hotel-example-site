@@ -43,13 +43,17 @@
         "node",
         "--test",
         "evaluation/tests/unit/billing.test.mjs",
+        "evaluation/tests/unit/failure-classifier.test.mjs",
+        "evaluation/tests/unit/diagnostic-guidance.test.mjs",
         "evaluation/tests/unit/thinning-decision-model.test.mjs",
         "evaluation/tests/unit/migration-candidate-report.test.mjs",
         "evaluation/tests/unit/environment-preflight.test.mjs",
         "evaluation/tests/unit/run-health-model.test.mjs",
         "evaluation/tests/unit/run-health-report.test.mjs",
         "evaluation/tests/unit/test-meaningfulness-model.test.mjs",
-        "evaluation/tests/unit/test-meaningfulness-report.test.mjs"
+        "evaluation/tests/unit/test-meaningfulness-report.test.mjs",
+        "evaluation/tests/unit/quality-gate-model.test.mjs",
+        "evaluation/tests/unit/quality-gate-report.test.mjs"
       ],
       "dependsOn": [],
       "requires": ["node"]

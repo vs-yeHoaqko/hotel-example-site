@@ -8,6 +8,7 @@ export function renderRunHealthReport(model) {
     `- Config: \`${model.metadata.configPath}\``,
     `- Runs directory: \`${model.metadata.runsDirectory}\``,
     `- Report path: \`${model.metadata.reportPath}\``,
+    `- Baseline: \`${model.metadata.baselinePath}\``,
     `- Selected runs: ${formatInlineList(model.metadata.selectedRunIds)}`,
     `- Max runs: ${model.metadata.maxRuns}`,
     `- Top slow tests: ${model.metadata.topSlowTests}`,
@@ -30,6 +31,7 @@ export function renderRunHealthReport(model) {
 
   renderSelectedRuns(lines, model.selectedRuns);
   renderTrendSummary(lines, model.trendSummary);
+  renderBaselineComparison(lines, model.baselineComparison);
   renderEvidence(lines, "Preflight Evidence", model.preflightEvidence ?? [], {
     empty: "No preflight evidence found in selected runs.",
   });
@@ -49,6 +51,54 @@ export function renderRunHealthReport(model) {
   renderRecommendedReviewFocus(lines, model.recommendedReviewFocus);
 
   return `${lines.join("\n")}\n`;
+}
+
+function renderBaselineComparison(lines, baselineComparison) {
+  lines.push("", "## Baseline Comparison", "");
+  if (!baselineComparison?.available) {
+    lines.push("Baseline comparison is unavailable.");
+    return;
+  }
+
+  lines.push(`Baseline source: \`${baselineComparison.baselinePath}\``);
+  if (baselineComparison.updatedFrom) {
+    lines.push(`Updated from: ${baselineComparison.updatedFrom}`);
+  }
+  if (baselineComparison.notes.length > 0) {
+    lines.push("", "### Baseline Notes", "");
+    for (const note of baselineComparison.notes) {
+      lines.push(`- ${note}`);
+    }
+  }
+
+  lines.push("", "### Baseline Status Counts", "");
+  for (const [status, count] of Object.entries(baselineComparison.summary)) {
+    lines.push(`- ${status}: ${count}`);
+  }
+
+  lines.push(
+    "",
+    "### Layer Baseline Findings",
+    "",
+    "| Layer | Status | Observed | Baseline | Tolerance | Message |",
+    "| --- | --- | --- | --- | --- | --- |",
+  );
+  if (baselineComparison.layers.length === 0) {
+    lines.push("| None | - | - | - | - | - |");
+    return;
+  }
+  for (const item of baselineComparison.layers) {
+    lines.push(
+      formatRow([
+        escapeTable(item.layer),
+        escapeTable(item.status),
+        formatLayerValue(item.observedStatus, item.observedDurationMs),
+        formatLayerValue(item.baselineStatus, item.baselineDurationMs),
+        formatDuration(item.toleranceMs),
+        escapeTable(item.message),
+      ]),
+    );
+  }
 }
 
 function renderTrendSummary(lines, trendSummary) {
@@ -253,6 +303,13 @@ function formatInlineList(items) {
 
 function formatDuration(value) {
   return typeof value === "number" ? `${value}ms` : "-";
+}
+
+function formatLayerValue(status, durationMs) {
+  if (!status && typeof durationMs !== "number") {
+    return "-";
+  }
+  return `${status ?? "-"} / ${formatDuration(durationMs)}`;
 }
 
 function formatDelta(value) {

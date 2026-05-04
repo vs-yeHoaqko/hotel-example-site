@@ -104,6 +104,21 @@ test("unknown ownership remains low-confidence and artifact-first", () => {
   assert.equal(guidance.likelyTargets[0].label, "Recorded failure evidence");
 });
 
+test("new diagnostic categories produce actionable guidance", () => {
+  assert.equal(
+    createGuidance(diagnostic({ classification: "flaky" })).action,
+    "investigate_flaky",
+  );
+  assert.equal(
+    createGuidance(diagnostic({ classification: "harness_bug" })).action,
+    "inspect_test",
+  );
+  assert.equal(
+    createGuidance(diagnostic({ classification: "product_regression" })).action,
+    "inspect_product",
+  );
+});
+
 function diagnostic(overrides = {}) {
   return {
     type: "layer_command",

@@ -175,6 +175,81 @@ test("builds layer trends from latest and previous comparable observations", asy
   );
 });
 
+test("compares latest layer health against committed baseline", async () => {
+  const repoRoot = await createTempRepo();
+  await writeConfig(repoRoot, { maxRuns: 1 });
+  await writeJson(repoRoot, "evaluation/baselines/run-health-baseline.json", {
+    schemaVersion: 1,
+    updatedFrom: "unit fixture",
+    notes: ["baseline note"],
+    layers: [
+      {
+        name: "integration",
+        expectedStatus: "passed",
+        durationMs: 40000,
+        durationToleranceMs: 1000,
+        slowAllowed: false,
+        timeoutAllowed: false,
+      },
+      {
+        name: "smoke-e2e",
+        expectedStatus: "passed",
+        durationMs: 30000,
+        durationToleranceMs: 1000,
+        slowAllowed: true,
+        timeoutAllowed: false,
+      },
+      {
+        name: "unit",
+        expectedStatus: "passed",
+        durationMs: 5000,
+        durationToleranceMs: 1000,
+        slowAllowed: false,
+        timeoutAllowed: false,
+      },
+    ],
+  });
+  await writeSummary(repoRoot, "20260103T000000Z-c", {
+    layers: [
+      layer({
+        name: "integration",
+        durationMs: 43000,
+      }),
+      layer({
+        name: "unit",
+        durationMs: 1000,
+      }),
+      layer({
+        name: "new-layer",
+        durationMs: 100,
+      }),
+    ],
+  });
+
+  const model = await createRunHealthModel({ repoRoot });
+
+  assert.equal(
+    model.metadata.baselinePath,
+    "evaluation/baselines/run-health-baseline.json",
+  );
+  assert.deepEqual(model.baselineComparison.summary, {
+    improved: 1,
+    unchanged: 0,
+    regressed: 1,
+    missing: 1,
+    new: 1,
+  });
+  assert.deepEqual(
+    model.baselineComparison.layers.map((item) => [item.layer, item.status]),
+    [
+      ["integration", "regressed"],
+      ["new-layer", "new"],
+      ["smoke-e2e", "missing"],
+      ["unit", "improved"],
+    ],
+  );
+});
+
 test("extracts slow, unstable, retried, and environment Playwright evidence deterministically", async () => {
   const repoRoot = await createTempRepo();
   await writeConfig(repoRoot, { maxRuns: 1, testSlowThresholdMs: 1000 });
@@ -277,6 +352,19 @@ test("reports no flaky evidence when selected runs contain only expected passed 
 test("extracts preflight evidence and no-environment wording state", async () => {
   const repoRoot = await createTempRepo();
   await writeConfig(repoRoot, { maxRuns: 1, testSlowThresholdMs: 1000 });
+  await writeJson(repoRoot, "evaluation/baselines/run-health-baseline.json", {
+    schemaVersion: 1,
+    layers: [
+      {
+        name: "environment",
+        expectedStatus: "passed",
+        durationMs: 100,
+        durationToleranceMs: 1000,
+        slowAllowed: false,
+        timeoutAllowed: false,
+      },
+    ],
+  });
   await writeSummary(repoRoot, "20260106T000000Z-e", {
     layers: [
       layer({
