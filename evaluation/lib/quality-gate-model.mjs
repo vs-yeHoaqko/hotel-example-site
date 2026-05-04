@@ -13,8 +13,6 @@ import { createThinningExecutionSummary } from "./thinning-decision-model.mjs";
 export const DEFAULT_QUALITY_GATE_CONFIG_PATH =
   "evaluation/config/quality-gate.config.json";
 
-const STATUS_ORDER = ["pass", "warn", "fail"];
-
 export async function createQualityGateModel({
   repoRoot = process.cwd(),
   configPath = DEFAULT_QUALITY_GATE_CONFIG_PATH,
@@ -25,7 +23,6 @@ export async function createQualityGateModel({
     configPath,
     overrides: { reportPath },
   });
-  const warnings = [];
   const runHealth = await createRunHealthModel({
     repoRoot,
     configPath: config.sources.runHealthConfigPath,
@@ -50,11 +47,15 @@ export async function createQualityGateModel({
     diagnosticFindings,
   });
   const thresholdFindings = evaluateThresholds(config.thresholds, metrics);
+  const baselineFindings = createBaselineFindings(runHealth.baselineComparison);
+  const diagnosticQualityFindings =
+    createDiagnosticQualityFindings(diagnosticFindings);
+  const thinningFindings = createThinningQualityFindings(thinningExecution);
   const allFindings = [
     ...thresholdFindings,
-    ...createBaselineFindings(runHealth.baselineComparison),
-    ...createDiagnosticQualityFindings(diagnosticFindings),
-    ...createThinningQualityFindings(thinningExecution),
+    ...baselineFindings,
+    ...diagnosticQualityFindings,
+    ...thinningFindings,
   ];
   const status = aggregateStatus(allFindings);
 
@@ -74,19 +75,15 @@ export async function createQualityGateModel({
     ],
     metrics,
     thresholdFindings,
-    baselineFindings: createBaselineFindings(runHealth.baselineComparison),
+    baselineFindings,
     diagnosticFindings,
-    thinningFindings: createThinningQualityFindings(thinningExecution),
+    thinningFindings,
     recommendedActions: createRecommendedActions({
       status,
       allFindings,
       runHealth,
     }),
-    warnings: [
-      ...warnings,
-      ...runHealth.warnings,
-      ...testMeaningfulness.warnings,
-    ],
+    warnings: [...runHealth.warnings, ...testMeaningfulness.warnings],
   };
 }
 
@@ -156,6 +153,7 @@ export async function loadQualityGateConfig({
 export function evaluateThresholds(thresholds, metrics) {
   return thresholds.map((threshold) => {
     const actual = metrics[threshold.metric];
+    const expected = describeThreshold(threshold);
     if (typeof actual !== "number") {
       return {
         id: threshold.id,
@@ -163,7 +161,7 @@ export function evaluateThresholds(thresholds, metrics) {
         metric: threshold.metric,
         status: threshold.enforcement === "fail" ? "fail" : "warn",
         actual: null,
-        expected: describeThreshold(threshold),
+        expected,
         message: `Metric "${threshold.metric}" is unavailable.`,
         rationale: threshold.rationale,
       };
@@ -180,10 +178,10 @@ export function evaluateThresholds(thresholds, metrics) {
           : "warn"
         : "pass",
       actual,
-      expected: describeThreshold(threshold),
+      expected,
       message: breached
-        ? `${threshold.metric}=${actual} breaches ${describeThreshold(threshold)}.`
-        : `${threshold.metric}=${actual} is within ${describeThreshold(threshold)}.`,
+        ? `${threshold.metric}=${actual} breaches ${expected}.`
+        : `${threshold.metric}=${actual} is within ${expected}.`,
       rationale: threshold.rationale,
     };
   });
