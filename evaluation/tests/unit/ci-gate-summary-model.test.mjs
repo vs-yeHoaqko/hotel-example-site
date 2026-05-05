@@ -4,6 +4,7 @@ import {
   createCiGateSummaryFromQualityGate,
   selectPrimaryIssue,
 } from "../../lib/ci-gate-summary-model.mjs";
+import { createTempRepo } from "../fixtures/run-health-fixtures.mjs";
 
 test("selects fail-enforced required evidence as the primary issue", () => {
   const issue = selectPrimaryIssue({
@@ -22,8 +23,10 @@ test("selects fail-enforced required evidence as the primary issue", () => {
   assert.equal(issue.status, "fail");
 });
 
-test("creates summary model with unknown-safe fields", () => {
+test("creates summary model with unknown-safe fields", async () => {
+  const repoRoot = await createTempRepo();
   const model = createCiGateSummaryFromQualityGate({
+    repoRoot,
     qualityGate: {
       status: "pass",
       metadata: {
@@ -50,9 +53,11 @@ test("creates summary model with unknown-safe fields", () => {
     [
       "evaluation/reports/ci-gate-summary.md",
       "evaluation/reports/quality-gate.md",
+      "evaluation/reports/feature-coverage-matrix.md",
       "evaluation/reports/run-health.md",
     ],
   );
+  assert.match(model.warnings.join("\n"), /feature coverage matrix/);
 });
 
 test("prioritizes environment diagnostics before warning thresholds", () => {

@@ -5,8 +5,8 @@
 - Status: `warn`
 - Mode: `collect-all`
 - Target: `local`
-- Run ID: `20260505T010750Z-012-ci-gate-summary-and-enforcement-e46cb73`
-- Generated at: 2026-05-05T01:15:59.050Z
+- Run ID: `20260505T024104Z-013-feature-coverage-matrix-2e9046b`
+- Generated at: 2026-05-05T02:44:47.986Z
 
 ## Primary Issue
 
@@ -21,6 +21,7 @@
 
 - `evaluation/reports/ci-gate-summary.md`
 - `evaluation/reports/quality-gate.md`
+- `evaluation/reports/feature-coverage-matrix.md`
 - `evaluation/reports/run-health.md`
 - `evaluation/reports/test-meaningfulness.md`
 - `evaluation/reports/migration-candidates.md`

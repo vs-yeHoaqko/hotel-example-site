@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/012-ci-gate-summary-and-enforcement/plan.md`
+`evaluation/specs/013-feature-coverage-matrix/plan.md`
 
 <!-- SPECKIT END -->
 

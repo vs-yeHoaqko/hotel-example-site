@@ -211,7 +211,12 @@ function extractPreflightEvidence({
   }
 }
 
-function extractPlaywrightObservations({ result, run, layer, artifactPath }) {
+export function extractPlaywrightObservations({
+  result,
+  run,
+  layer,
+  artifactPath,
+}) {
   const observations = [];
   walkSuites(result.suites, [], (suiteTitles, spec) => {
     const title = [...suiteTitles, spec.title].filter(Boolean).join(" > ");

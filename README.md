@@ -129,6 +129,20 @@ Run the default evaluation gate:
 node evaluation/bin/run-evaluation.mjs --mode gate
 ```
 
+Generate the human-readable feature coverage matrix after a run:
+
+```bash
+node evaluation/bin/generate-run-health.mjs
+node evaluation/bin/generate-test-meaningfulness.mjs
+node evaluation/bin/generate-feature-coverage-matrix.mjs
+```
+
+The matrix is written to
+[`evaluation/reports/feature-coverage-matrix.md`](./evaluation/reports/feature-coverage-matrix.md).
+It shows product-facing functions and journeys, latest pass/fail/warn/unknown
+status, proving test layer, evidence paths, unmapped evidence, and warning
+notes.
+
 See [`evaluation/README.md`](./evaluation/README.md) for the available modes,
 output structure, and current boundaries.
 

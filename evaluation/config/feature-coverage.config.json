@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "reportPath": "evaluation/reports/feature-coverage-matrix.md",
+  "sources": {
+    "runHealthConfigPath": "evaluation/config/run-health.config.json",
+    "testMeaningfulnessConfigPath": "evaluation/config/test-meaningfulness.config.json"
+  },
+  "features": [
+    {
+      "id": "en-us-login",
+      "label": "Login journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "en-US",
+      "evidence": [{ "layer": "full-e2e", "file": "en-US/login.spec.ts" }]
+    },
+    {
+      "id": "ja-login",
+      "label": "Login journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "ja",
+      "evidence": [{ "layer": "full-e2e", "file": "ja/login.spec.ts" }]
+    },
+    {
+      "id": "en-us-signup",
+      "label": "Signup journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "en-US",
+      "evidence": [{ "layer": "full-e2e", "file": "en-US/signup.spec.ts" }]
+    },
+    {
+      "id": "ja-signup",
+      "label": "Signup journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "ja",
+      "evidence": [{ "layer": "full-e2e", "file": "ja/signup.spec.ts" }]
+    },
+    {
+      "id": "en-us-plans",
+      "label": "Plans journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "en-US",
+      "evidence": [{ "layer": "full-e2e", "file": "en-US/plans.spec.ts" }]
+    },
+    {
+      "id": "ja-plans",
+      "label": "Plans journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "ja",
+      "evidence": [{ "layer": "full-e2e", "file": "ja/plans.spec.ts" }]
+    },
+    {
+      "id": "en-us-mypage",
+      "label": "My page journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "en-US",
+      "evidence": [{ "layer": "full-e2e", "file": "en-US/mypage.spec.ts" }]
+    },
+    {
+      "id": "ja-mypage",
+      "label": "My page journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "ja",
+      "evidence": [{ "layer": "full-e2e", "file": "ja/mypage.spec.ts" }]
+    },
+    {
+      "id": "en-us-redirection",
+      "label": "Redirection journey",
+      "category": "product-navigation",
+      "ownerLayer": "root-e2e",
+      "locale": "en-US",
+      "evidence": [{ "layer": "full-e2e", "file": "en-US/redirection.spec.ts" }]
+    },
+    {
+      "id": "ja-redirection",
+      "label": "Redirection journey",
+      "category": "product-navigation",
+      "ownerLayer": "root-e2e",
+      "locale": "ja",
+      "evidence": [{ "layer": "full-e2e", "file": "ja/redirection.spec.ts" }]
+    },
+    {
+      "id": "en-us-reservation",
+      "label": "Reservation journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "en-US",
+      "evidence": [{ "layer": "full-e2e", "file": "en-US/reserve.spec.ts" }]
+    },
+    {
+      "id": "ja-reservation",
+      "label": "Reservation journey",
+      "category": "product-journey",
+      "ownerLayer": "root-e2e",
+      "locale": "ja",
+      "evidence": [{ "layer": "full-e2e", "file": "ja/reserve.spec.ts" }]
+    },
+    {
+      "id": "smoke-reservation-completion",
+      "label": "Smoke reservation completion",
+      "category": "smoke-journey",
+      "ownerLayer": "e2e",
+      "evidence": [{ "layer": "smoke-e2e", "file": "smoke.spec.mjs" }]
+    },
+    {
+      "id": "reservation-form-behavior",
+      "label": "Reservation form page-local state and validation",
+      "category": "page-local-behavior",
+      "ownerLayer": "integration",
+      "evidence": [
+        { "layer": "integration", "file": "reservation-form.spec.mjs" }
+      ]
+    },
+    {
+      "id": "billing-calculation",
+      "label": "Total bill calculation",
+      "category": "product-domain-rule",
+      "ownerLayer": "unit",
+      "evidence": [
+        { "layer": "unit", "file": "evaluation/tests/unit/billing.test.mjs" }
+      ]
+    }
+  ]
+}

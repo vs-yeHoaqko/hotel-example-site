@@ -54,6 +54,8 @@
         "evaluation/tests/unit/test-meaningfulness-report.test.mjs",
         "evaluation/tests/unit/quality-gate-model.test.mjs",
         "evaluation/tests/unit/quality-gate-report.test.mjs",
+        "evaluation/tests/unit/feature-coverage-model.test.mjs",
+        "evaluation/tests/unit/feature-coverage-report.test.mjs",
         "evaluation/tests/unit/ci-gate-summary-model.test.mjs",
         "evaluation/tests/unit/ci-gate-summary-report.test.mjs"
       ],

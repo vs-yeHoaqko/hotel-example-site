@@ -1,8 +1,12 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { createQualityGateModel } from "./quality-gate-model.mjs";
 import { normalizeEvaluationPath } from "./run-health-common.mjs";
 
 export const DEFAULT_CI_GATE_SUMMARY_REPORT_PATH =
   "evaluation/reports/ci-gate-summary.md";
+export const DEFAULT_FEATURE_COVERAGE_MATRIX_REPORT_PATH =
+  "evaluation/reports/feature-coverage-matrix.md";
 
 export async function createCiGateSummaryModel({
   repoRoot = process.cwd(),
@@ -27,6 +31,7 @@ export function createCiGateSummaryFromQualityGate({
   repoRoot = process.cwd(),
   qualityGate,
   reportPath = DEFAULT_CI_GATE_SUMMARY_REPORT_PATH,
+  featureCoverageReportPath = DEFAULT_FEATURE_COVERAGE_MATRIX_REPORT_PATH,
 } = {}) {
   const primaryIssue = selectPrimaryIssue(qualityGate);
   const normalizedReportPath = normalizeEvaluationPath({
@@ -34,6 +39,13 @@ export function createCiGateSummaryFromQualityGate({
     inputPath: reportPath,
     fieldName: "reportPath",
   });
+  const normalizedFeatureCoverageReportPath = featureCoverageReportPath
+    ? normalizeEvaluationPath({
+        repoRoot,
+        inputPath: featureCoverageReportPath,
+        fieldName: "featureCoverageReportPath",
+      })
+    : null;
 
   return {
     metadata: {
@@ -52,10 +64,18 @@ export function createCiGateSummaryFromQualityGate({
       qualityGate?.recommendedActions?.[0] ??
       "No action required.",
     evidence: createEvidenceList({
+      repoRoot,
       qualityGate,
       reportPath: normalizedReportPath,
+      featureCoverageReportPath: normalizedFeatureCoverageReportPath,
     }),
-    warnings: qualityGate?.warnings ?? [],
+    warnings: [
+      ...(qualityGate?.warnings ?? []),
+      ...createFeatureCoverageWarnings({
+        repoRoot,
+        featureCoverageReportPath: normalizedFeatureCoverageReportPath,
+      }),
+    ],
   };
 }
 
@@ -99,13 +119,33 @@ export function selectPrimaryIssue(qualityGate) {
   );
 }
 
-function createEvidenceList({ qualityGate, reportPath }) {
+function createEvidenceList({
+  qualityGate,
+  reportPath,
+  featureCoverageReportPath,
+}) {
   const paths = [
     reportPath,
     qualityGate?.metadata?.reportPath,
+    featureCoverageReportPath,
     ...(qualityGate?.evidenceSources ?? []),
   ].filter(Boolean);
   return [...new Set(paths)].map((path) => ({ path }));
+}
+
+function createFeatureCoverageWarnings({
+  repoRoot,
+  featureCoverageReportPath,
+}) {
+  if (!featureCoverageReportPath) {
+    return [];
+  }
+  if (existsSync(path.resolve(repoRoot, featureCoverageReportPath))) {
+    return [];
+  }
+  return [
+    `${featureCoverageReportPath}: feature coverage matrix was not found; generate it before relying on CI-visible feature coverage.`,
+  ];
 }
 
 function issueFromFinding(finding, kind) {

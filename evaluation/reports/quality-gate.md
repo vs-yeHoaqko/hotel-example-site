@@ -5,7 +5,7 @@
 - Generated command: `node evaluation/bin/generate-quality-gate.mjs`
 - Config: `evaluation/config/quality-gate.config.json`
 - Report path: `evaluation/reports/quality-gate.md`
-- Checked at: 2026-05-05T01:14:51.325Z
+- Checked at: 2026-05-05T02:44:48.006Z
 
 ## Final Status
 
@@ -23,46 +23,44 @@
 | Metric              | Value |
 | ------------------- | ----- |
 | approvedToThin      | 28    |
-| assertionCount      | 622   |
+| assertionCount      | 643   |
 | baselineMissing     | 0     |
 | baselineNew         | 0     |
-| baselineRegressions | 3     |
+| baselineRegressions | 0     |
 | blockedThinning     | 0     |
 | deferredThinning    | 0     |
 | environmentEvidence | 2     |
 | flakyEvidence       | 0     |
 | keepE2E             | 4     |
-| meaningfulTests     | 151   |
-| totalTests          | 151   |
+| meaningfulTests     | 156   |
+| totalTests          | 156   |
 | weakSignalTests     | 0     |
 
 ## Required Evidence Findings
 
-| ID                | Source  | Status | Message                                                                                                                           |
-| ----------------- | ------- | ------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| latest-summary    | summary | pass   | Latest evaluation summary is readable: evaluation/runs/20260505T010750Z-012-ci-gate-summary-and-enforcement-e46cb73/summary.json. |
-| environment-layer | summary | pass   | environment layer passed in latest run 20260505T010750Z-012-ci-gate-summary-and-enforcement-e46cb73.                              |
-| smoke-e2e-layer   | summary | pass   | smoke-e2e layer passed in latest run 20260505T010750Z-012-ci-gate-summary-and-enforcement-e46cb73.                                |
+| ID                | Source  | Status | Message                                                                                                                   |
+| ----------------- | ------- | ------ | ------------------------------------------------------------------------------------------------------------------------- |
+| latest-summary    | summary | pass   | Latest evaluation summary is readable: evaluation/runs/20260505T024104Z-013-feature-coverage-matrix-2e9046b/summary.json. |
+| environment-layer | summary | pass   | environment layer passed in latest run 20260505T024104Z-013-feature-coverage-matrix-2e9046b.                              |
+| smoke-e2e-layer   | summary | pass   | smoke-e2e layer passed in latest run 20260505T024104Z-013-feature-coverage-matrix-2e9046b.                                |
 
 ## Threshold Findings
 
-| ID                    | Source              | Status | Message                              |
-| --------------------- | ------------------- | ------ | ------------------------------------ |
-| weak-signal-tests     | test-meaningfulness | pass   | weakSignalTests=0 is within <= 0.    |
-| total-tests           | test-meaningfulness | pass   | totalTests=151 is within >= 136.     |
-| assertion-like-checks | test-meaningfulness | pass   | assertionCount=622 is within >= 572. |
-| baseline-regressions  | run-health          | warn   | baselineRegressions=3 breaches <= 0. |
-| baseline-missing      | run-health          | pass   | baselineMissing=0 is within <= 0.    |
-| environment-evidence  | diagnostics         | warn   | environmentEvidence=2 breaches <= 0. |
-| flaky-evidence        | diagnostics         | pass   | flakyEvidence=0 is within <= 0.      |
+| ID                    | Source              | Status | Message                               |
+| --------------------- | ------------------- | ------ | ------------------------------------- |
+| weak-signal-tests     | test-meaningfulness | pass   | weakSignalTests=0 is within <= 0.     |
+| total-tests           | test-meaningfulness | pass   | totalTests=156 is within >= 136.      |
+| assertion-like-checks | test-meaningfulness | pass   | assertionCount=643 is within >= 572.  |
+| baseline-regressions  | run-health          | pass   | baselineRegressions=0 is within <= 0. |
+| baseline-missing      | run-health          | pass   | baselineMissing=0 is within <= 0.     |
+| environment-evidence  | diagnostics         | warn   | environmentEvidence=2 breaches <= 0.  |
+| flaky-evidence        | diagnostics         | pass   | flakyEvidence=0 is within <= 0.       |
 
 ## Baseline Findings
 
-| ID                   | Source     | Status | Message                                                                     |
-| -------------------- | ---------- | ------ | --------------------------------------------------------------------------- |
-| baseline-full-e2e    | run-health | warn   | full-e2e: duration 190438ms exceeds baseline 110000ms + tolerance 30000ms   |
-| baseline-integration | run-health | warn   | integration: duration 111769ms exceeds baseline 70000ms + tolerance 20000ms |
-| baseline-smoke-e2e   | run-health | warn   | smoke-e2e: duration 78657ms exceeds baseline 50000ms + tolerance 20000ms    |
+| ID   | Source | Status | Message |
+| ---- | ------ | ------ | ------- |
+| None | -      | -      | -       |
 
 ## Diagnostic Findings
 
@@ -83,11 +81,7 @@
 - Fix environment/tooling evidence before changing tests.
 - Review slow layers against configured thresholds.
 - Review top slow Playwright tests for lower-layer coverage or setup cost.
-- baselineRegressions=3 breaches <= 0.
 - environmentEvidence=2 breaches <= 0.
-- full-e2e: duration 190438ms exceeds baseline 110000ms + tolerance 30000ms
-- integration: duration 111769ms exceeds baseline 70000ms + tolerance 20000ms
-- smoke-e2e: duration 78657ms exceeds baseline 50000ms + tolerance 20000ms
 - smoke-e2e: Run diagnostic
 - smoke-e2e: smoke-e2e layer
 
