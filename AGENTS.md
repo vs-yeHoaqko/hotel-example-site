@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/011-evaluation-quality-gate/plan.md`
+`evaluation/specs/013-feature-coverage-matrix/plan.md`
 
 <!-- SPECKIT END -->
 

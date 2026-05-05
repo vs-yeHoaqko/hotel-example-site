@@ -79,9 +79,15 @@ jobs:
       - name: Generate test meaningfulness report
         if: ${{ always() }}
         run: node evaluation/bin/generate-test-meaningfulness.mjs
+      - name: Generate feature coverage matrix
+        if: ${{ always() }}
+        run: node evaluation/bin/generate-feature-coverage-matrix.mjs
       - name: Generate quality gate report
         if: ${{ always() }}
         run: node evaluation/bin/generate-quality-gate.mjs
+      - name: Generate CI gate summary
+        if: ${{ always() }}
+        run: node evaluation/bin/generate-ci-gate-summary.mjs
       - name: Upload evaluation evidence
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
@@ -93,6 +99,8 @@ jobs:
             evaluation/reports/thinning-execution.md
             evaluation/reports/run-health.md
             evaluation/reports/test-meaningfulness.md
+            evaluation/reports/feature-coverage-matrix.md
             evaluation/reports/quality-gate.md
+            evaluation/reports/ci-gate-summary.md
           if-no-files-found: warn
           retention-days: 14

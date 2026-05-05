@@ -1,12 +1,41 @@
 {
   "schemaVersion": 1,
   "reportPath": "evaluation/reports/quality-gate.md",
+  "ciSummaryReportPath": "evaluation/reports/ci-gate-summary.md",
   "sources": {
     "runHealthConfigPath": "evaluation/config/run-health.config.json",
     "testMeaningfulnessConfigPath": "evaluation/config/test-meaningfulness.config.json",
     "migrationCandidatesConfigPath": "evaluation/config/migration-candidates.config.json",
     "thinningDecisionsConfigPath": "evaluation/config/thinning-decisions.config.json"
   },
+  "requiredEvidence": [
+    {
+      "id": "latest-summary",
+      "source": "summary",
+      "condition": "latest-run-readable",
+      "modes": ["gate", "full", "collect-all"],
+      "enforcement": "fail",
+      "rationale": "The quality gate cannot be trusted unless the latest evaluation run produced a readable summary."
+    },
+    {
+      "id": "environment-layer",
+      "source": "summary",
+      "condition": "layer-passed",
+      "layer": "environment",
+      "modes": ["gate", "full", "collect-all"],
+      "enforcement": "fail",
+      "rationale": "Environment preflight must pass before product or test failures can be interpreted safely."
+    },
+    {
+      "id": "smoke-e2e-layer",
+      "source": "summary",
+      "condition": "layer-passed",
+      "layer": "smoke-e2e",
+      "modes": ["gate", "full", "collect-all"],
+      "enforcement": "fail",
+      "rationale": "The required smoke E2E journey preserves minimum reservation-completion browser confidence."
+    }
+  ],
   "thresholds": [
     {
       "id": "weak-signal-tests",

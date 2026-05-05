@@ -16,6 +16,11 @@ export function renderQualityGateReport(model) {
 
   renderEvidenceSources(lines, model.evidenceSources);
   renderMetrics(lines, model.metrics);
+  renderFindings(
+    lines,
+    "Required Evidence Findings",
+    model.requiredEvidenceFindings,
+  );
   renderFindings(lines, "Threshold Findings", model.thresholdFindings);
   renderFindings(lines, "Baseline Findings", model.baselineFindings);
   renderDiagnostics(lines, model.diagnosticFindings);
@@ -43,6 +48,7 @@ function renderMetrics(lines, metrics) {
 }
 
 function renderFindings(lines, title, findings) {
+  const items = findings ?? [];
   lines.push(
     "",
     `## ${title}`,
@@ -50,11 +56,11 @@ function renderFindings(lines, title, findings) {
     "| ID | Source | Status | Message |",
     "| --- | --- | --- | --- |",
   );
-  if (findings.length === 0) {
+  if (items.length === 0) {
     lines.push("| None | - | - | - |");
     return;
   }
-  for (const finding of findings) {
+  for (const finding of items) {
     lines.push(
       formatRow([
         escapeTable(finding.id),

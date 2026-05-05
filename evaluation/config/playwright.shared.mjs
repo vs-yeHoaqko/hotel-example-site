@@ -57,5 +57,6 @@ export function webServerConfig() {
     command: webServerCommand,
     url: LOCAL_BASE_URL,
     reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
   };
 }

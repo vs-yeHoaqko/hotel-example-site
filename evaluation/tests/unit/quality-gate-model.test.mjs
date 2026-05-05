@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   aggregateStatus,
+  evaluateRequiredEvidence,
   evaluateThresholds,
   loadQualityGateConfig,
 } from "../../lib/quality-gate-model.mjs";
@@ -89,6 +90,75 @@ test("reports missing metrics as warning-first findings", () => {
   assert.equal(aggregateStatus(findings), "warn");
 });
 
+test("validates required evidence policy", async () => {
+  const repoRoot = await createTempRepo();
+  await writeQualityGateConfig(repoRoot, {
+    requiredEvidence: [
+      {
+        id: "bad",
+        source: "summary",
+        condition: "layer-passed",
+        enforcement: "fail",
+      },
+    ],
+  });
+
+  await assert.rejects(
+    () => loadQualityGateConfig({ repoRoot }),
+    /layer must be set/,
+  );
+});
+
+test("fails required evidence when latest summary is missing", () => {
+  const findings = evaluateRequiredEvidence(
+    [
+      requiredEvidence({
+        id: "latest-summary",
+        condition: "latest-run-readable",
+      }),
+    ],
+    null,
+  );
+
+  assert.equal(findings[0].status, "fail");
+  assert.match(findings[0].message, /No readable latest evaluation summary/);
+  assert.equal(aggregateStatus(findings), "fail");
+});
+
+test("fails required environment and smoke layers when they do not pass", () => {
+  const findings = evaluateRequiredEvidence(
+    [
+      requiredEvidence({
+        id: "environment-layer",
+        condition: "layer-passed",
+        layer: "environment",
+      }),
+      requiredEvidence({
+        id: "smoke-e2e-layer",
+        condition: "layer-passed",
+        layer: "smoke-e2e",
+      }),
+    ],
+    {
+      runId: "run-a",
+      mode: "gate",
+      summaryPath: "evaluation/runs/run-a/summary.json",
+      layers: [
+        { name: "environment", status: "failed" },
+        { name: "smoke-e2e", status: "skipped" },
+      ],
+    },
+  );
+
+  assert.deepEqual(
+    findings.map((finding) => [finding.id, finding.status]),
+    [
+      ["environment-layer", "fail"],
+      ["smoke-e2e-layer", "fail"],
+    ],
+  );
+});
+
 async function writeQualityGateConfig(repoRoot, overrides = {}) {
   await writeJson(repoRoot, "evaluation/config/quality-gate.config.json", {
     schemaVersion: 1,
@@ -102,7 +172,9 @@ async function writeQualityGateConfig(repoRoot, overrides = {}) {
       thinningDecisionsConfigPath:
         "evaluation/config/thinning-decisions.config.json",
     },
+    ciSummaryReportPath: "evaluation/reports/ci-gate-summary.md",
     thresholds: [threshold()],
+    requiredEvidence: [requiredEvidence()],
     ...overrides,
   });
 }
@@ -116,6 +188,18 @@ function threshold(overrides = {}) {
     warnAt: 0,
     enforcement: "warn",
     rationale: "Sample threshold.",
+    ...overrides,
+  };
+}
+
+function requiredEvidence(overrides = {}) {
+  return {
+    id: "latest-summary",
+    source: "summary",
+    condition: "latest-run-readable",
+    modes: ["gate", "full", "collect-all"],
+    enforcement: "fail",
+    rationale: "Sample required evidence.",
     ...overrides,
   };
 }
