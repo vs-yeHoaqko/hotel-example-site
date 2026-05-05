@@ -46,12 +46,18 @@ export async function createQualityGateModel({
     thinningExecution,
     diagnosticFindings,
   });
+  const latestRun = runHealth.selectedRuns[0] ?? null;
+  const requiredEvidenceFindings = evaluateRequiredEvidence(
+    config.requiredEvidence,
+    latestRun,
+  );
   const thresholdFindings = evaluateThresholds(config.thresholds, metrics);
   const baselineFindings = createBaselineFindings(runHealth.baselineComparison);
   const diagnosticQualityFindings =
     createDiagnosticQualityFindings(diagnosticFindings);
   const thinningFindings = createThinningQualityFindings(thinningExecution);
   const allFindings = [
+    ...requiredEvidenceFindings,
     ...thresholdFindings,
     ...baselineFindings,
     ...diagnosticQualityFindings,
@@ -64,9 +70,11 @@ export async function createQualityGateModel({
       command: "node evaluation/bin/generate-quality-gate.mjs",
       configPath: config.configPath,
       reportPath: config.reportPath,
+      ciSummaryReportPath: config.ciSummaryReportPath,
       checkedAt: new Date().toISOString(),
     },
     status,
+    latestRun: summarizeLatestRun(latestRun),
     evidenceSources: [
       runHealth.metadata.reportPath,
       testMeaningfulness.metadata.reportPath,
@@ -74,6 +82,7 @@ export async function createQualityGateModel({
       migrationCandidates.metadata.thinningExecutionReportPath,
     ],
     metrics,
+    requiredEvidenceFindings,
     thresholdFindings,
     baselineFindings,
     diagnosticFindings,
@@ -124,6 +133,12 @@ export async function loadQualityGateConfig({
       inputPath: config.reportPath,
       fieldName: "reportPath",
     }),
+    ciSummaryReportPath: normalizeEvaluationPath({
+      repoRoot,
+      inputPath:
+        config.ciSummaryReportPath ?? "evaluation/reports/ci-gate-summary.md",
+      fieldName: "ciSummaryReportPath",
+    }),
     sources: {
       runHealthConfigPath: normalizeEvaluationPath({
         repoRoot,
@@ -146,6 +161,9 @@ export async function loadQualityGateConfig({
         fieldName: "sources.thinningDecisionsConfigPath",
       }),
     },
+    requiredEvidence: Array.isArray(config.requiredEvidence)
+      ? config.requiredEvidence.map(validateRequiredEvidence)
+      : [],
     thresholds: config.thresholds.map(validateThreshold),
   };
 }
@@ -197,6 +215,66 @@ export function aggregateStatus(findings) {
   return "pass";
 }
 
+export function evaluateRequiredEvidence(requiredEvidence, latestRun) {
+  return requiredEvidence.map((item) => {
+    if (
+      latestRun &&
+      item.modes.length > 0 &&
+      !item.modes.includes(latestRun.mode)
+    ) {
+      return requiredEvidenceFinding({
+        item,
+        status: "pass",
+        message: `${item.id} is not required for ${latestRun.mode} mode.`,
+      });
+    }
+
+    if (item.condition === "latest-run-readable") {
+      return requiredEvidenceFinding({
+        item,
+        status: latestRun ? "pass" : item.enforcement,
+        message: latestRun
+          ? `Latest evaluation summary is readable: ${latestRun.summaryPath}.`
+          : "No readable latest evaluation summary is available.",
+      });
+    }
+
+    if (item.condition === "layer-passed") {
+      const layer = latestRun?.layers?.find(
+        (candidate) => candidate.name === item.layer,
+      );
+      if (!latestRun) {
+        return requiredEvidenceFinding({
+          item,
+          status: item.enforcement,
+          message: `${item.layer} layer cannot be evaluated without a latest run summary.`,
+        });
+      }
+      if (!layer) {
+        return requiredEvidenceFinding({
+          item,
+          status: item.enforcement,
+          message: `${item.layer} layer is missing from latest run ${latestRun.runId}.`,
+        });
+      }
+      return requiredEvidenceFinding({
+        item,
+        status: layer.status === "passed" ? "pass" : item.enforcement,
+        message:
+          layer.status === "passed"
+            ? `${item.layer} layer passed in latest run ${latestRun.runId}.`
+            : `${item.layer} layer status is ${layer.status} in latest run ${latestRun.runId}.`,
+      });
+    }
+
+    return requiredEvidenceFinding({
+      item,
+      status: item.enforcement,
+      message: `Unsupported required evidence condition: ${item.condition}.`,
+    });
+  });
+}
+
 function validateThreshold(threshold, index) {
   const label = `thresholds[${index}]`;
   for (const key of ["id", "source", "metric", "operator", "enforcement"]) {
@@ -223,6 +301,67 @@ function validateThreshold(threshold, index) {
     failAt: threshold.failAt,
     enforcement: threshold.enforcement,
     rationale: stringOrDefault(threshold.rationale, ""),
+  };
+}
+
+function validateRequiredEvidence(item, index) {
+  const label = `requiredEvidence[${index}]`;
+  for (const key of ["id", "source", "condition", "enforcement"]) {
+    if (!item[key] || typeof item[key] !== "string") {
+      throw new Error(`${label}.${key} must be a non-empty string`);
+    }
+  }
+  if (!["warn", "fail"].includes(item.enforcement)) {
+    throw new Error(`${label}.enforcement must be warn or fail`);
+  }
+  if (!["latest-run-readable", "layer-passed"].includes(item.condition)) {
+    throw new Error(
+      `${label}.condition must be latest-run-readable or layer-passed`,
+    );
+  }
+  if (item.condition === "layer-passed" && !item.layer) {
+    throw new Error(`${label}.layer must be set for layer-passed conditions`);
+  }
+  return {
+    id: item.id,
+    source: item.source,
+    condition: item.condition,
+    layer: item.layer ?? null,
+    modes: Array.isArray(item.modes) ? item.modes : [],
+    enforcement: item.enforcement,
+    rationale: stringOrDefault(item.rationale, ""),
+  };
+}
+
+function requiredEvidenceFinding({ item, status, message }) {
+  return {
+    id: item.id,
+    source: item.source,
+    status,
+    message,
+    rationale: item.rationale,
+  };
+}
+
+function summarizeLatestRun(latestRun) {
+  if (!latestRun) {
+    return null;
+  }
+  return {
+    runId: latestRun.runId,
+    mode: latestRun.mode,
+    target: latestRun.target,
+    status: latestRun.status,
+    summaryPath: latestRun.summaryPath,
+    recommendedNextAction: latestRun.recommendedNextAction,
+    layers: latestRun.layers.map((layer) => ({
+      name: layer.name,
+      required: layer.required,
+      status: layer.status,
+      classification: layer.classification,
+      timedOut: layer.timedOut,
+      skippedReason: layer.skippedReason,
+    })),
   };
 }
 

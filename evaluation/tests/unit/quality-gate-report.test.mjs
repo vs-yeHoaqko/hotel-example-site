@@ -19,6 +19,14 @@ test("renders final status evidence sources findings and actions", () => {
       totalTests: 136,
       weakSignalTests: 1,
     },
+    requiredEvidenceFindings: [
+      finding({
+        id: "environment-layer",
+        source: "summary",
+        status: "fail",
+        message: "environment layer status is failed.",
+      }),
+    ],
     thresholdFindings: [
       finding({
         id: "weak-signal-tests",
@@ -45,6 +53,8 @@ test("renders final status evidence sources findings and actions", () => {
 
   assert.match(report, /^# Evaluation Quality Gate Report/m);
   assert.match(report, /Status: `warn`/);
+  assert.match(report, /Required Evidence Findings/);
+  assert.match(report, /environment-layer/);
   assert.match(report, /weak-signal-tests/);
   assert.match(report, /environment-run-a/);
   assert.match(report, /Review warning or failure findings/);

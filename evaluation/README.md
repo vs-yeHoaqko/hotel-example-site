@@ -172,10 +172,38 @@ Initial thresholds are warning-first. They are defined in:
 evaluation/config/quality-gate.config.json
 ```
 
+The gate also contains a small set of fail-enforced integrity checks:
+
+- the latest evaluation summary must be readable
+- the required `environment` layer must pass
+- the required `smoke-e2e` layer must pass
+
+Timing, slow-layer, flaky, and test-meaningfulness trend signals remain
+warning-only unless a reviewed policy explicitly promotes them to fail.
+
 The current minimum meaningfulness thresholds are intentionally conservative.
 They detect sudden coverage drops without failing the current fork on normal
 growth. Timing and baseline thresholds should be tightened only after stable CI
 evidence exists.
+
+## CI Gate Summary
+
+For CI review, the harness can write a concise first-screen summary:
+
+```sh
+node evaluation/bin/generate-ci-gate-summary.mjs
+```
+
+The command writes:
+
+```text
+evaluation/reports/ci-gate-summary.md
+```
+
+In GitHub Actions, the same Markdown is appended to the workflow run summary
+when `GITHUB_STEP_SUMMARY` is available. Use this summary to identify the gate
+status, mode, target, primary issue, recommended action, and report paths before
+opening the full artifact bundle.
 
 ## Environment Preflight
 
@@ -346,6 +374,9 @@ The implementation has been verified with:
 - On constrained sandboxes, Node's default test-runner isolation can fail with
   `spawn EPERM`. The canonical local/CI command remains `node --test ...`; for
   sandbox-only diagnosis, run the same files with `--test-isolation=none`.
+- Local Playwright layers allow up to 120 seconds for the webpack dev server to
+  become ready. This avoids treating slow first-time bundling as a product
+  failure while still keeping layer timeouts bounded.
 - The smoke reservation completion journey is the timeout-prone gate test
   because it covers page navigation, popup handling, confirmation, modal
   success. It intentionally stops at the success modal instead of waiting for
