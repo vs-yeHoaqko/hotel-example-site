@@ -2,20 +2,20 @@
 
 ## Result
 
-- Status: `warn`
+- Status: `pass`
 - Mode: `collect-all`
 - Target: `local`
-- Run ID: `20260505T024104Z-013-feature-coverage-matrix-2e9046b`
-- Generated at: 2026-05-05T02:44:47.986Z
+- Run ID: `20260508T083122Z-013-feature-coverage-matrix-5a913ae`
+- Generated at: 2026-05-08T08:34:05.451Z
 
 ## Primary Issue
 
-- ID: `environment-20260505T005842Z-012-ci-gate-summary-and-enforcement-e46cb73-smoke-e2e-Run diagnostic`
+- ID: `flaky-20260508T074623Z-013-feature-coverage-matrix-dcef17d-integration-integration layer`
 - Kind: `diagnostic`
 - Status: `warn`
-- Message: smoke-e2e: Run diagnostic
-- Recommended action: Fix environment/tooling evidence before changing tests.
-- Evidence: `evaluation/runs/20260505T005842Z-012-ci-gate-summary-and-enforcement-e46cb73/summary.json`
+- Message: integration: integration layer
+- Recommended action: Inspect failure evidence before assigning ownership.
+- Evidence: `evaluation/runs/20260508T074623Z-013-feature-coverage-matrix-dcef17d/summary.json`
 
 ## Evidence
 
@@ -29,4 +29,4 @@
 
 ## Warnings
 
-- None
+- evaluation/runs/20260508T074623Z-013-feature-coverage-matrix-dcef17d/artifacts/integration-results.json: missing
