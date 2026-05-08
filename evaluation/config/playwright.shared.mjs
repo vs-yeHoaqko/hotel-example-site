@@ -8,17 +8,6 @@ const runDir = path.resolve(
   process.cwd(),
   process.env.EVALUATION_RUN_DIR ?? "evaluation/runs/manual",
 );
-const webpackCli = path.join(
-  process.cwd(),
-  "node_modules",
-  "webpack-cli",
-  "bin",
-  "cli.js",
-);
-const webServerCommand =
-  process.platform === "win32"
-    ? `cd /d "${process.cwd()}" && node "${webpackCli}" && node "${webpackCli}" serve`
-    : `cd "${process.cwd()}" && node "${webpackCli}" && node "${webpackCli}" serve`;
 
 export function playwrightJsonReporter(outputFile) {
   return [
@@ -50,11 +39,12 @@ export function desktopChromiumProject() {
 }
 
 export function webServerConfig() {
-  if (useDeployedSite) {
+  if (useDeployedSite || process.env.EVALUATION_SKIP_WEB_SERVER === "true") {
     return undefined;
   }
   return {
-    command: webServerCommand,
+    command: "node evaluation/bin/start-static-server.mjs",
+    cwd: process.cwd(),
     url: LOCAL_BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

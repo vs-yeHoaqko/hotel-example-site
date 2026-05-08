@@ -69,8 +69,7 @@
       "timeoutMs": 120000,
       "command": [
         "node",
-        "node_modules/@playwright/test/cli.js",
-        "test",
+        "evaluation/bin/run-playwright-with-server.mjs",
         "--config",
         "evaluation/config/playwright.integration.config.mjs"
       ],
@@ -85,8 +84,7 @@
       "timeoutMs": 180000,
       "command": [
         "node",
-        "node_modules/@playwright/test/cli.js",
-        "test",
+        "evaluation/bin/run-playwright-with-server.mjs",
         "--config",
         "evaluation/config/playwright.smoke.config.mjs"
       ],
@@ -101,8 +99,7 @@
       "timeoutMs": 600000,
       "command": [
         "node",
-        "node_modules/@playwright/test/cli.js",
-        "test",
+        "evaluation/bin/run-playwright-with-server.mjs",
         "--config",
         "evaluation/config/playwright.full.config.mjs"
       ],
