@@ -240,6 +240,15 @@ CI is recorded as adapter policy only. Guided onboarding does not create or
 edit GitHub Actions workflows, product files, package scripts, root browser
 test configuration, root E2E files, E2E thinning decisions, or repair changes.
 
+Agents can use the repository-local onboarding Skill by path:
+
+```text
+[$harness-onboarding](evaluation/skills/harness-onboarding/SKILL.md)
+```
+
+The Skill stays under `evaluation/skills/` rather than `.agents/skills/` to keep
+the workflow evaluation-local and reduce future upstream path conflicts.
+
 ## Environment Preflight
 
 The first gate layer is `environment`:

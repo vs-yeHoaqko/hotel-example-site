@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/015-guided-harness-onboarding/plan.md`
+`evaluation/specs/016-harness-onboarding-skill/plan.md`
 
 <!-- SPECKIT END -->
 

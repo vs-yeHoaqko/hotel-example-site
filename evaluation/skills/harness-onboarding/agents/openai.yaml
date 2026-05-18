@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Onboarding"
+  short_description: "Guide evaluation harness adapter onboarding"
+  default_prompt: "Guide me through evaluation harness adapter onboarding for this repository."
