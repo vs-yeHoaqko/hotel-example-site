@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 
 For the active evaluation-harness feature, read the current plan:
-`evaluation/specs/013-feature-coverage-matrix/plan.md`
+`evaluation/specs/014-evaluation-harness-commonization/plan.md`
 
 <!-- SPECKIT END -->
 
