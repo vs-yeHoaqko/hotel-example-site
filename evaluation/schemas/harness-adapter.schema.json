@@ -1,0 +1,186 @@
+{
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "repository",
+    "layers",
+    "targets",
+    "artifacts",
+    "behaviorMapping",
+    "ownership",
+    "qualityPolicy",
+    "ciPolicy",
+    "governance",
+    "decisions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "integer" },
+    "repository": {
+      "type": "object",
+      "required": ["root", "discoveredAt", "packageManager"],
+      "additionalProperties": true,
+      "properties": {
+        "root": { "type": "string" },
+        "discoveredAt": { "type": "string" },
+        "packageManager": {
+          "type": "object",
+          "required": ["value", "source"],
+          "additionalProperties": true,
+          "properties": {
+            "value": { "type": "string" },
+            "source": { "type": "string" },
+            "sourcePath": { "type": "string" }
+          }
+        }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "kind", "required", "status", "source"],
+        "additionalProperties": true,
+        "properties": {
+          "name": { "type": "string" },
+          "kind": { "type": "string" },
+          "command": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "required": { "type": "boolean" },
+          "status": { "type": "string" },
+          "source": { "type": "string" },
+          "sourcePath": { "type": "string" }
+        }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "status", "source"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string" },
+          "status": { "type": "string" },
+          "source": { "type": "string" },
+          "url": { "type": "string" }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["runDirectory", "reports"],
+      "additionalProperties": true,
+      "properties": {
+        "runDirectory": {
+          "type": "object",
+          "required": ["path", "source", "ignored"],
+          "additionalProperties": true,
+          "properties": {
+            "path": { "type": "string" },
+            "source": { "type": "string" },
+            "ignored": { "type": "boolean" }
+          }
+        },
+        "reports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "source"],
+            "additionalProperties": true,
+            "properties": {
+              "path": { "type": "string" },
+              "source": { "type": "string" },
+              "ignored": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "behaviorMapping": {
+      "type": "object",
+      "required": ["status", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "status": { "type": "string" },
+        "source": { "type": "string" }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "required": ["status", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "status": { "type": "string" },
+        "source": { "type": "string" }
+      }
+    },
+    "qualityPolicy": {
+      "type": "object",
+      "required": ["status", "source", "enforcement"],
+      "additionalProperties": true,
+      "properties": {
+        "status": { "type": "string" },
+        "source": { "type": "string" },
+        "enforcement": { "type": "string" }
+      }
+    },
+    "ciPolicy": {
+      "type": "object",
+      "required": ["mode", "status", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "mode": { "type": "string" },
+        "status": { "type": "string" },
+        "source": { "type": "string" },
+        "provider": { "type": "string" }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": ["allowedEditBoundary", "rollback", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "allowedEditBoundary": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "rollback": { "type": "string" },
+        "source": { "type": "string" }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "topic", "source", "status", "rationale"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string" },
+          "topic": { "type": "string" },
+          "source": { "type": "string" },
+          "status": { "type": "string" },
+          "rationale": { "type": "string" }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "stage", "topic", "prompt", "status"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string" },
+          "stage": { "type": "string" },
+          "topic": { "type": "string" },
+          "prompt": { "type": "string" },
+          "status": { "type": "string" }
+        }
+      }
+    }
+  }
+}

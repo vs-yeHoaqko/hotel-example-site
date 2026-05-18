@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "repository": {
+    "root": ".",
+    "discoveredAt": "2026-05-18T00:00:00.000Z",
+    "packageManager": {
+      "value": "pnpm",
+      "source": "confirmed",
+      "sourcePath": "package.json"
+    }
+  },
+  "layers": [
+    {
+      "name": "static",
+      "kind": "static",
+      "command": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "evaluation"
+      ],
+      "required": true,
+      "status": "confirmed",
+      "source": "confirmed",
+      "sourcePath": "evaluation/config/evaluation.config.json"
+    },
+    {
+      "name": "unit",
+      "kind": "unit",
+      "command": ["node", "--test", "evaluation/tests/unit"],
+      "required": true,
+      "status": "confirmed",
+      "source": "confirmed",
+      "sourcePath": "evaluation/tests/unit"
+    },
+    {
+      "name": "behavior-mapping",
+      "kind": "custom",
+      "required": false,
+      "status": "deferred",
+      "source": "deferred",
+      "rationale": "Feature mappings must be reviewed by the adopter."
+    }
+  ],
+  "targets": [
+    {
+      "id": "local-static-site",
+      "kind": "browser",
+      "status": "confirmed",
+      "source": "confirmed",
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
+  "artifacts": {
+    "runDirectory": {
+      "path": "evaluation/runs",
+      "source": "confirmed",
+      "ignored": true
+    },
+    "reports": [
+      {
+        "path": "evaluation/reports/harness-adapter-readiness.md",
+        "source": "confirmed",
+        "ignored": false
+      }
+    ]
+  },
+  "behaviorMapping": {
+    "status": "unknown",
+    "source": "deferred",
+    "nextAction": "Review behavior mapping before claiming coverage.",
+    "unmapped": []
+  },
+  "ownership": {
+    "status": "unknown",
+    "source": "deferred",
+    "nextAction": "Add owner-layer policy before E2E thinning."
+  },
+  "qualityPolicy": {
+    "status": "confirmed",
+    "source": "confirmed",
+    "enforcement": "warning-first",
+    "rationale": "Initial adapter readiness should not fail on unreviewed thresholds."
+  },
+  "ciPolicy": {
+    "mode": "local-only",
+    "status": "confirmed",
+    "source": "confirmed",
+    "provider": "none",
+    "rationale": "CI workflow generation is an opt-in later feature."
+  },
+  "governance": {
+    "allowedEditBoundary": ["evaluation/"],
+    "rollback": "Remove generated adapter state and readiness report.",
+    "source": "confirmed"
+  },
+  "decisions": [
+    {
+      "id": "ci-policy-local-only",
+      "topic": "CI policy",
+      "source": "confirmed",
+      "status": "confirmed",
+      "value": "local-only",
+      "rationale": "Initial onboarding records CI policy but does not generate workflows."
+    },
+    {
+      "id": "behavior-mapping-deferred",
+      "topic": "Behavior mapping",
+      "source": "deferred",
+      "status": "deferred",
+      "rationale": "Mapping requires human review."
+    }
+  ],
+  "questions": []
+}

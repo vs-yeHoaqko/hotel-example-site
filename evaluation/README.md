@@ -205,6 +205,41 @@ when `GITHUB_STEP_SUMMARY` is available. Use this summary to identify the gate
 status, mode, target, primary issue, recommended action, and report paths before
 opening the full artifact bundle.
 
+## Guided Harness Onboarding
+
+The harness can draft and validate an adapter record before evidence runs. This
+is intended for commonization work where a maintainer needs to map local
+repository facts to harness concepts without memorizing the process.
+
+Preview discovered facts, proposed layers, pending questions, and conflicts
+without writing files:
+
+```sh
+node evaluation/bin/init-harness-adapter.mjs --dry-run --non-interactive
+```
+
+Write the draft adapter state to `evaluation/config/harness-adapter.json`:
+
+```sh
+node evaluation/bin/init-harness-adapter.mjs --write --non-interactive
+```
+
+Validate adapter readiness without running product tests:
+
+```sh
+node evaluation/bin/validate-harness-adapter.mjs
+```
+
+The validation command writes:
+
+```text
+evaluation/reports/harness-adapter-readiness.md
+```
+
+CI is recorded as adapter policy only. Guided onboarding does not create or
+edit GitHub Actions workflows, product files, package scripts, root browser
+test configuration, root E2E files, E2E thinning decisions, or repair changes.
+
 ## Environment Preflight
 
 The first gate layer is `environment`:
